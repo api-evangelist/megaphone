@@ -1,0 +1,206 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Megaphone API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "apikey": {
+        "key": "Authorization",
+        "value": "Token token=\"{{apiToken}}\"",
+        "in": "header"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Networks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Retrieve a network.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id",
+            "params": [
+              { "name": "network_id", "value": "", "type": "path", "description": "The network identifier." }
+            ]
+          },
+          "docs": "Retrieves a single network (account container) by ID."
+        },
+        {
+          "info": { "name": "List podcasts in a network.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts",
+            "params": [
+              { "name": "network_id", "value": "", "type": "path", "description": "The network identifier." }
+            ]
+          },
+          "docs": "Lists podcasts belonging to a network. Paginated via the Link header."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Podcasts", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create a podcast.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts",
+            "body": { "type": "json", "data": "{\"title\": \"\", \"subtitle\": \"\", \"author\": \"\"}" }
+          },
+          "docs": "Creates a new podcast within a network."
+        },
+        {
+          "info": { "name": "Retrieve a podcast.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id"
+          },
+          "docs": "Retrieves a single podcast by ID."
+        },
+        {
+          "info": { "name": "Update a podcast.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id",
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Updates an existing podcast."
+        },
+        {
+          "info": { "name": "Delete a podcast.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id"
+          },
+          "docs": "Deletes a podcast."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Episodes", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List episodes in a podcast.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes"
+          },
+          "docs": "Lists episodes for a podcast. Set draft=true to include drafts."
+        },
+        {
+          "info": { "name": "Create an episode.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes",
+            "body": { "type": "json", "data": "{\"title\": \"\", \"pubdate\": \"\"}" }
+          },
+          "docs": "Creates a new episode under a podcast."
+        },
+        {
+          "info": { "name": "Retrieve an episode.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id"
+          },
+          "docs": "Retrieves a single episode by ID."
+        },
+        {
+          "info": { "name": "Update an episode.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id",
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Updates an existing episode."
+        },
+        {
+          "info": { "name": "Delete an episode.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id"
+          },
+          "docs": "Deletes an episode."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Campaigns and Orders (legacy Direct Sales)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List campaigns.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/organizations/:organization_id/campaigns"
+          },
+          "docs": "Lists direct-sales campaigns for an organization (legacy v1)."
+        },
+        {
+          "info": { "name": "List orders for a campaign.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/organizations/:organization_id/campaigns/:campaign_id/orders"
+          },
+          "docs": "Lists the orders attached to a campaign."
+        },
+        {
+          "info": { "name": "List advertisements for an order.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/orders/:order_id/advertisements"
+          },
+          "docs": "Lists the advertisements attached to an order."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Direct Sales v2 (modeled)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List advertisers.", "type": "http" },
+          "http": { "method": "GET", "url": "https://cms.megaphone.fm/api/v2/advertisers" },
+          "docs": "Lists advertisers in the v2 Direct Sales API. Path modeled from documented resources."
+        },
+        {
+          "info": { "name": "List campaigns.", "type": "http" },
+          "http": { "method": "GET", "url": "https://cms.megaphone.fm/api/v2/campaigns" },
+          "docs": "Lists campaigns in the v2 Direct Sales API. Path modeled."
+        },
+        {
+          "info": { "name": "List orders.", "type": "http" },
+          "http": { "method": "GET", "url": "https://cms.megaphone.fm/api/v2/orders" },
+          "docs": "Lists orders in the v2 Direct Sales API. Path modeled."
+        },
+        {
+          "info": { "name": "List assets.", "type": "http" },
+          "http": { "method": "GET", "url": "https://cms.megaphone.fm/api/v2/assets" },
+          "docs": "Lists creative assets in the v2 Direct Sales API. Path modeled."
+        },
+        {
+          "info": { "name": "List targeting options.", "type": "http" },
+          "http": { "method": "GET", "url": "https://cms.megaphone.fm/api/v2/targeting" },
+          "docs": "Lists targeting reference data (geos, devices, Nielsen segments). Path modeled."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Exports (modeled)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Export metrics.", "type": "http" },
+          "http": { "method": "GET", "url": "https://cms.megaphone.fm/api/metrics_export" },
+          "docs": "Pull-based bulk export of download and listener metrics. Path modeled."
+        },
+        {
+          "info": { "name": "Export impressions.", "type": "http" },
+          "http": { "method": "GET", "url": "https://cms.megaphone.fm/api/impressions_export" },
+          "docs": "Pull-based bulk export of ad-impression data. Path modeled."
+        }
+      ]
+    }
+  ]
+}

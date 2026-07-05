@@ -1,0 +1,134 @@
+aid: megaphone
+name: Megaphone
+review:
+  question: Does Megaphone expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-05'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Megaphone's public API surface is
+    request/response REST over HTTPS (base https://cms.megaphone.fm/api, with a
+    v2 base at https://cms.megaphone.fm/api/v2). There is no server-push
+    transport - no WebSocket and no Server-Sent Events - documented on
+    Megaphone's own API. List responses are paginated with an RFC 5988 Link
+    header (rel="next"); clients poll pages, and the Metrics and Impressions
+    Export Services are pull-based bulk exports, not streaming sockets. There is
+    no server-push surface to model.
+findings:
+  summary: |
+    Megaphone (Megaphone by Spotify) does not publish a documented public
+    WebSocket API. Megaphone is an enterprise podcast hosting, distribution, and
+    ad-monetization platform, owned by Spotify since its 2020 acquisition. Its
+    REST API is documented at developers.megaphone.fm (with an Apiary interactive
+    console and a support-center overview) and served from
+    https://cms.megaphone.fm/api. Requests authenticate with a per-user API token
+    sent as the header Authorization: Token token="<TOKEN>". The API covers
+    networks, podcasts, and episodes (view/create/update/delete), dynamic ad
+    insertion, and direct-sales advertising - campaigns, orders, promo orders,
+    advertisements, advertisers, agencies, targeting and reference data - plus
+    Metrics and Impressions Export Services. A v2 Direct Sales API became
+    available April 15, 2026 (legacy Direct Sales endpoints sunset July 14, 2026).
+    All transports are HTTPS REST; no realtime, bidirectional, or streaming
+    WebSocket (ws:// or wss://) endpoint is documented anywhere in Megaphone's
+    developer docs, Apiary reference, or support articles.
+  accessModel: |
+    Documentation is publicly readable (developers.megaphone.fm, the Apiary
+    reference, and the support-center API article are all open). Obtaining an API
+    token, however, requires a paid Megaphone account: an API token is generated
+    for every account and viewed under User Settings. Megaphone is a paid
+    enterprise platform (Professional plan from $99/month; Enterprise pricing is
+    contact-sales), so the API is public-docs / account-gated rather than fully
+    self-serve or fully gated.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://cms.megaphone.fm/api
+      documented: true
+      note: v1 API for networks, podcasts, episodes, and legacy Direct Sales.
+    - protocol: REST
+      scheme: https
+      baseURL: https://cms.megaphone.fm/api/v2
+      documented: true
+      note: v2 Direct Sales API (advertisers, campaigns, orders, assets, advertisements, targeting); effective 2026-04-15.
+    - protocol: HTTP Export
+      scheme: https
+      documented: true
+      note: Metrics Export Service and Impressions Export Service are pull-based bulk exports, not streaming.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in Megaphone's developer docs, Apiary reference, or support articles as of the review date.
+  authentication:
+    scheme: Token
+    header: 'Authorization: Token token="<API_TOKEN>"'
+    note: Per-user, role-scoped token generated on account creation and managed under User Settings; treat as a password and do not reuse across orgs.
+  pagination:
+    style: RFC 5988 Link header
+    note: List endpoints return a Link header with rel="next" plus page / per_page query parameters.
+  rateLimit:
+    documented: 60 requests per minute (1 request per second)
+    note: >-
+      Megaphone's documentation states a limit of 60 requests/minute (1 req/sec).
+      The build brief referenced 300 req/min; the publicly documented figure is
+      60/min, which is used here.
+  endpointsConfirmedRest:
+    - GET    https://cms.megaphone.fm/api/networks/{network_id}
+    - GET    https://cms.megaphone.fm/api/networks/{network_id}/podcasts
+    - POST   https://cms.megaphone.fm/api/networks/{network_id}/podcasts
+    - GET    https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}
+    - PUT    https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}
+    - DELETE https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}
+    - GET    https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}/episodes
+    - POST   https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}/episodes
+    - GET    https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}/episodes/{episode_id}
+    - PUT    https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}/episodes/{episode_id}
+    - DELETE https://cms.megaphone.fm/api/networks/{network_id}/podcasts/{podcast_id}/episodes/{episode_id}
+    - GET    https://cms.megaphone.fm/api/organizations/{organization_id}/campaigns
+    - GET    https://cms.megaphone.fm/api/organizations/{organization_id}/campaigns/{campaign_id}/orders
+    - GET    https://cms.megaphone.fm/api/orders/{order_id}/advertisements
+  endpointsModeled:
+    - GET/POST  https://cms.megaphone.fm/api/v2/advertisers
+    - GET/POST  https://cms.megaphone.fm/api/v2/campaigns
+    - GET/POST  https://cms.megaphone.fm/api/v2/orders
+    - GET/POST  https://cms.megaphone.fm/api/v2/orders/{order_id}/advertisements
+    - GET/POST  https://cms.megaphone.fm/api/v2/assets
+    - GET       https://cms.megaphone.fm/api/v2/targeting
+    - GET       https://cms.megaphone.fm/api/metrics_export
+    - GET       https://cms.megaphone.fm/api/impressions_export
+  modeledNote: |
+    v1 network/podcast/episode/campaign/order/advertisement paths are confirmed
+    from the Megaphone developer docs, the Apiary reference, and the open-source
+    theatlantic/megaphone Python client (which sets BASE_URL
+    https://cms.megaphone.fm/api and the Authorization: Token token="..." header).
+    The exact v2 Direct Sales path strings and the export-service paths were not
+    publicly retrievable at review time and are honestly modeled from the
+    documented resource lists; verify against developers.megaphone.fm during
+    reconciliation.
+sources:
+  - url: https://developers.megaphone.fm/
+    type: Documentation
+    note: Official developer portal - authorization, pagination, data model, and interactive console. All REST; no WebSocket.
+  - url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+    type: Documentation
+    note: API overview - base URL https://cms.megaphone.fm/api, token auth, 60 req/min rate limit, resource list, Metrics/Impressions Export Services.
+  - url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+    type: APIReference
+    note: Apiary reference for podcasts/episodes and related resources; all HTTPS REST.
+  - url: https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+    type: Documentation
+    note: Direct Sales / Order Management integration - campaigns, orders, advertisements, targeting; API-key auth.
+  - url: https://github.com/theatlantic/megaphone
+    type: SourceCode
+    note: Open-source Python client - confirms BASE_URL https://cms.megaphone.fm/api, Authorization Token header, and Link-header pagination.
+  - url: https://megaphone.spotify.com/pricing
+    type: Pricing
+    note: Professional plan from $99/month; Enterprise pricing is contact-sales.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists, and Megaphone's own public API is
+    request/response REST (v1 and v2) with Link-header pagination plus pull-based
+    Metrics/Impressions export. No AsyncAPI document was created because there is
+    no server-push transport (WebSocket or SSE) on Megaphone's own API to model.

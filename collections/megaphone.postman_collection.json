@@ -1,0 +1,186 @@
+{
+  "info": {
+    "name": "Megaphone API",
+    "description": "Megaphone by Spotify - enterprise podcast hosting and ad-monetization REST API. Base https://cms.megaphone.fm/api (v1) and https://cms.megaphone.fm/api/v2 (Direct Sales v2). Auth via header Authorization: Token token=\"<API_TOKEN>\". v2 Direct Sales and export paths are modeled from documented resources.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "Authorization", "type": "string" },
+      { "key": "value", "value": "Token token=\"{{apiToken}}\"", "type": "string" },
+      { "key": "in", "value": "header", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://cms.megaphone.fm/api" },
+    { "key": "baseUrlV2", "value": "https://cms.megaphone.fm/api/v2" },
+    { "key": "apiToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Networks",
+      "item": [
+        {
+          "name": "Retrieve a network",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/networks/:network_id", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id"] }
+          }
+        },
+        {
+          "name": "List podcasts in a network",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Podcasts",
+      "item": [
+        {
+          "name": "Create a podcast",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"title\": \"\", \"subtitle\": \"\", \"author\": \"\"}" },
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts"] }
+          }
+        },
+        {
+          "name": "Retrieve a podcast",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id"] }
+          }
+        },
+        {
+          "name": "Update a podcast",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id"] }
+          }
+        },
+        {
+          "name": "Delete a podcast",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Episodes",
+      "item": [
+        {
+          "name": "List episodes in a podcast",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id/episodes", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id", "episodes"] }
+          }
+        },
+        {
+          "name": "Create an episode",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"title\": \"\", \"pubdate\": \"\"}" },
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id/episodes", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id", "episodes"] }
+          }
+        },
+        {
+          "name": "Retrieve an episode",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id", "episodes", ":episode_id"] }
+          }
+        },
+        {
+          "name": "Update an episode",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id", "episodes", ":episode_id"] }
+          }
+        },
+        {
+          "name": "Delete an episode",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id", "host": ["{{baseUrl}}"], "path": ["networks", ":network_id", "podcasts", ":podcast_id", "episodes", ":episode_id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Campaigns and Orders (legacy Direct Sales)",
+      "item": [
+        {
+          "name": "List campaigns",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/organizations/:organization_id/campaigns", "host": ["{{baseUrl}}"], "path": ["organizations", ":organization_id", "campaigns"] }
+          }
+        },
+        {
+          "name": "List orders for a campaign",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/organizations/:organization_id/campaigns/:campaign_id/orders", "host": ["{{baseUrl}}"], "path": ["organizations", ":organization_id", "campaigns", ":campaign_id", "orders"] }
+          }
+        },
+        {
+          "name": "List advertisements for an order",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/orders/:order_id/advertisements", "host": ["{{baseUrl}}"], "path": ["orders", ":order_id", "advertisements"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Direct Sales v2 (modeled)",
+      "item": [
+        {
+          "name": "List advertisers",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrlV2}}/advertisers", "host": ["{{baseUrlV2}}"], "path": ["advertisers"] } }
+        },
+        {
+          "name": "List campaigns",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrlV2}}/campaigns", "host": ["{{baseUrlV2}}"], "path": ["campaigns"] } }
+        },
+        {
+          "name": "List orders",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrlV2}}/orders", "host": ["{{baseUrlV2}}"], "path": ["orders"] } }
+        },
+        {
+          "name": "List assets",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrlV2}}/assets", "host": ["{{baseUrlV2}}"], "path": ["assets"] } }
+        },
+        {
+          "name": "List targeting options",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrlV2}}/targeting", "host": ["{{baseUrlV2}}"], "path": ["targeting"] } }
+        }
+      ]
+    },
+    {
+      "name": "Exports (modeled)",
+      "item": [
+        {
+          "name": "Export metrics",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/metrics_export", "host": ["{{baseUrl}}"], "path": ["metrics_export"] } }
+        },
+        {
+          "name": "Export impressions",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/impressions_export", "host": ["{{baseUrl}}"], "path": ["impressions_export"] } }
+        }
+      ]
+    }
+  ]
+}

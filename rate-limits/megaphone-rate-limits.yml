@@ -1,0 +1,59 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Megaphone
+providerId: megaphone
+created: '2026-07-05'
+modified: '2026-07-05'
+reconciled: false
+tags:
+- Podcasting
+- Advertising
+- Rate Limiting
+- Quotas
+description: >-
+  The Megaphone API is rate limited to 60 requests per minute (1 request per
+  second) per API token, as stated in Megaphone's API documentation. List
+  endpoints are paginated with an RFC 5988 Link header (rel="next") plus page
+  and per_page query parameters, so large data pulls should page sequentially
+  while staying under the per-second cap. Bulk data is better retrieved through
+  the pull-based Metrics Export Service and Impressions Export Service than by
+  paging the standard endpoints.
+notes: >-
+  The API Evangelist build brief referenced 300 requests/minute; the publicly
+  documented figure across Megaphone's own docs is 60 requests/minute (1 req/sec),
+  which is used here. Verify the current limit against developers.megaphone.fm
+  during reconciliation. The token is per-user and role-scoped and should not be
+  shared across organizations.
+sources:
+- https://support.megaphone.fm/en/articles/2247461-megaphone-api
+- https://developers.megaphone.fm/
+- https://github.com/theatlantic/megaphone
+responseCodes:
+  throttled: 429
+limits:
+- name: API Requests
+  scope: token
+  metric: requests
+  limit: 60 per minute (1 per second)
+  notes: Documented per-token request rate limit across the Megaphone REST API.
+- name: Pagination
+  scope: endpoint
+  metric: items
+  limit: page / per_page via Link header
+  notes: List endpoints return an RFC 5988 Link header with rel="next"; page sequentially.
+- name: Bulk Export
+  scope: account
+  metric: records
+  limit: use export services
+  notes: Metrics Export Service and Impressions Export Service are the intended path for large data volumes.
+policies:
+- name: Backoff Strategy
+  description: On a 429 response, back off and retry - stay within 1 request per second and implement exponential backoff with jitter.
+- name: Token Scope
+  description: Tokens are per-user and carry the generating user's role; do not reuse a token across organizations.
+- name: Pagination Discipline
+  description: Follow the Link header rel="next" relation rather than guessing page counts, and prefer export services for bulk pulls.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

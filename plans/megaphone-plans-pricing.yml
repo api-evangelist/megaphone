@@ -1,0 +1,87 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Megaphone
+providerId: megaphone
+created: '2026-07-05'
+modified: '2026-07-05'
+reconciled: false
+tags:
+- Podcasting
+- Podcast Hosting
+- Advertising
+- Spotify
+- Plans
+description: >-
+  Megaphone is a paid enterprise podcast hosting and ad-monetization platform.
+  The API itself has no separate fee - an API token is generated for every
+  account - but using it requires a paid Megaphone plan. Public pricing lists a
+  Professional plan starting at $99/month (hosting, distribution, campaign
+  management, reporting, and monetization via the Spotify Audience Network) and
+  an Enterprise plan for large teams, networks, and shows averaging more than
+  ~20,000 downloads per episode, priced by contact-sales inquiry. Exact tier
+  entitlements and per-download economics are not published and must be confirmed
+  with Megaphone.
+notes: >-
+  Pricing figures are from the public Megaphone pricing page and third-party
+  summaries as of the review date; the Enterprise tier is quote-only. Verify
+  current plans and any monetization price floors at megaphone.spotify.com/pricing
+  during reconciliation.
+sources:
+- https://megaphone.spotify.com/pricing
+- https://megaphone.spotify.com/
+- https://support.megaphone.fm/en/articles/2247461-megaphone-api
+plans:
+- id: megaphone-professional
+  name: Professional
+  type: paid
+  description: >-
+    Entry paid plan for independent publishers - podcast hosting and
+    distribution, a campaign-management toolkit, reporting and analytics, and
+    monetization via the Spotify Audience Network. Includes an API token for
+    programmatic access.
+  entries:
+  - label: Monthly Subscription
+    name: professional_monthly
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $99/month
+    userMultiplied: false
+  elements:
+  - name: Podcast Hosting and Distribution
+  - name: Dynamic Ad Insertion
+  - name: Campaign Management
+  - name: Reporting and Analytics
+  - name: API Access
+- id: megaphone-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom plan for publishers and networks with large teams, many shows, and/or
+    complex needs (shows averaging more than ~20,000 downloads per episode).
+    Adds advanced Direct Sales, order-management integrations, dedicated support,
+    and negotiated terms. Priced by contact-sales inquiry.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Advanced Direct Sales
+  - name: Order Management Integrations
+  - name: Metrics and Impressions Export
+  - name: Dedicated Support and SLAs
+  - name: Custom Pricing
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

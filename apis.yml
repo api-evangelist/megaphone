@@ -1,0 +1,161 @@
+aid: megaphone
+url: https://raw.githubusercontent.com/api-evangelist/megaphone/refs/heads/main/apis.yml
+name: Megaphone
+kind: company
+description: Megaphone (Megaphone by Spotify) is an enterprise podcast hosting,
+  distribution, and advertising-monetization platform, owned by Spotify since its
+  2020 acquisition. Its REST API (base https://cms.megaphone.fm/api) lets podcast
+  producers and partners programmatically manage networks, podcasts, and episodes,
+  run dynamic ad insertion, and operate direct-sales advertising - campaigns,
+  orders, advertisements, advertisers, and targeting - plus pull metrics and
+  impressions via export services. API documentation is public, but an API token
+  requires a paid Megaphone account (Professional from $99/month, or Enterprise).
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Podcasting
+- Podcast Hosting
+- Advertising
+- Ad Monetization
+- Dynamic Ad Insertion
+- Media
+- Spotify
+created: '2026-07-05'
+modified: '2026-07-05'
+specificationVersion: '0.19'
+apis:
+- aid: megaphone:megaphone-networks-api
+  name: Megaphone Networks API
+  tags:
+  - Networks
+  - Organizations
+  - Podcasting
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  properties:
+  - url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+    type: Documentation
+  - url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+    type: APIReference
+  - url: openapi/megaphone-openapi.yml
+    type: OpenAPI
+  description: Read a network (the top-level account container) and list the podcasts
+    that belong to it. A network scopes access for a given API token and is the
+    parent of all podcast and episode resources.
+- aid: megaphone:megaphone-podcasts-api
+  name: Megaphone Podcasts API
+  tags:
+  - Podcasts
+  - Shows
+  - Feeds
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  properties:
+  - url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+    type: Documentation
+  - url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+    type: APIReference
+  - url: openapi/megaphone-openapi.yml
+    type: OpenAPI
+  description: Create, list, retrieve, update, and delete podcasts within a network,
+    including title, subtitle, author, artwork, categories, RSS/distribution
+    settings, and monetization configuration.
+- aid: megaphone:megaphone-episodes-api
+  name: Megaphone Episodes API
+  tags:
+  - Episodes
+  - Audio
+  - Dynamic Ad Insertion
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  properties:
+  - url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+    type: Documentation
+  - url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+    type: APIReference
+  - url: openapi/megaphone-openapi.yml
+    type: OpenAPI
+  description: Manage episodes under a podcast - create, list, retrieve, update, and
+    delete episodes, upload or reference audio, set publish dates and draft state,
+    and configure ad-insertion points for dynamic ad insertion.
+- aid: megaphone:megaphone-campaigns-orders-api
+  name: Megaphone Campaigns and Orders API
+  tags:
+  - Campaigns
+  - Orders
+  - Advertising
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  properties:
+  - url: https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+    type: Documentation
+  - url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+    type: APIReference
+  - url: openapi/megaphone-openapi.yml
+    type: OpenAPI
+  description: Direct-sales advertising surface (v1) scoped to an organization -
+    campaigns, campaign orders and promo orders, and the advertisements attached
+    to each order. These legacy Direct Sales endpoints are being superseded by the
+    v2 Direct Sales API.
+- aid: megaphone:megaphone-direct-sales-v2-api
+  name: Megaphone Direct Sales API v2
+  tags:
+  - Direct Sales
+  - Advertisements
+  - Targeting
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api/v2
+  properties:
+  - url: https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+    type: Documentation
+  - url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+    type: APIReference
+  - url: openapi/megaphone-openapi.yml
+    type: OpenAPI
+  description: Enhanced REST API (v2) for managing direct-sales advertising -
+    advertisers, campaigns, orders, assets, advertisements, and targeting. The v2
+    endpoints became available April 15, 2026 and replace the legacy Direct Sales
+    endpoints. Some v2 path details are modeled where the exact reference was not
+    publicly retrievable.
+- aid: megaphone:megaphone-metrics-export-api
+  name: Megaphone Metrics and Impressions Export API
+  tags:
+  - Metrics
+  - Impressions
+  - Analytics
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  properties:
+  - url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+    type: Documentation
+  - url: openapi/megaphone-openapi.yml
+    type: OpenAPI
+  description: Bulk export surfaces - the Metrics Export Service and Impressions
+    Export Service - for pulling download, listener, and ad-impression data for
+    measurement and reporting. Endpoint shapes are modeled from the documented
+    service descriptions.
+common:
+- type: LinkedIn
+  url: https://www.linkedin.com/company/megaphonepods
+- type: Website
+  url: https://megaphone.spotify.com/
+- type: Documentation
+  url: https://developers.megaphone.fm/
+- type: APIReference
+  url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+- type: Plans
+  url: plans/megaphone-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/megaphone-rate-limits.yml
+- type: FinOps
+  url: finops/megaphone-finops.yml
+- type: Pricing
+  url: https://megaphone.spotify.com/pricing
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

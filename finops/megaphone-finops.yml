@@ -1,0 +1,94 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Megaphone
+providerId: megaphone
+created: '2026-07-05'
+modified: '2026-07-05'
+reconciled: false
+tags:
+- Podcasting
+- Advertising
+- Spotify
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Megaphone spend. Megaphone by Spotify bills as a subscription
+  podcast-hosting and ad-monetization platform rather than a per-request API. The
+  dominant cost drivers are the plan subscription (Professional from $99/month;
+  Enterprise contact-sales) and the underlying hosting/distribution and dynamic
+  ad-insertion volume tied to episode downloads and ad impressions. On the
+  revenue side, monetization via the Spotify Audience Network offsets platform
+  cost. The API carries no separate line item; it is included with the account.
+notes: >-
+  Per-download and per-impression economics and any monetization price floor are
+  not publicly itemized and are quote-driven at the Enterprise tier; verify with
+  Megaphone during reconciliation. FOCUS mapping here is a best-effort model for a
+  subscription-plus-usage media platform.
+sources:
+- https://megaphone.spotify.com/pricing
+- https://megaphone.spotify.com/
+- https://support.megaphone.fm/en/articles/2247461-megaphone-api
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Megaphone by Spotify
+serviceCategory: Media and Podcasting
+billingModel:
+  pricingCategory: Subscription
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: Megaphone
+  ServiceCategory: Media and Podcasting
+  ProviderName: Megaphone by Spotify
+  PublisherName: Spotify
+  InvoiceIssuerName: Spotify
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription
+meters:
+- name: subscription
+  description: Monthly plan fee (Professional from $99/month; Enterprise negotiated).
+  unit: months
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+- name: episode_downloads
+  description: Episode downloads served through Megaphone hosting and distribution.
+  unit: downloads
+  aggregation: sum
+  dimensions:
+  - account
+  - podcast
+  - episode
+- name: ad_impressions
+  description: Dynamic-ad-insertion impressions delivered, tracked via the Impressions Export Service.
+  unit: impressions
+  aggregation: sum
+  dimensions:
+  - account
+  - campaign
+  - order
+principles:
+- name: Visibility
+  description: Track subscription tier plus download and ad-impression volume per podcast and campaign using the Metrics and Impressions Export Services.
+- name: Allocation
+  description: Map networks, podcasts, and organizations to internal teams/shows so hosting and ad spend attribute correctly.
+- name: Optimization
+  description: Right-size the plan tier to show count and download volume; monetize inventory via the Spotify Audience Network to offset platform cost.
+- name: Accountability
+  description: Assign owners per network/organization and review monthly subscription plus monetization revenue against download and impression trends.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
