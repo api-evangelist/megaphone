@@ -140,6 +140,12 @@ apis:
     measurement and reporting. Endpoint shapes are modeled from the documented
     service descriptions.
 common:
+- type: VulnerabilityDisclosure
+  url: security/megaphone-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/megaphone-domain-security.yml
+- type: Authentication
+  url: authentication/megaphone-authentication.yml
 - type: LinkedIn
   url: https://www.linkedin.com/company/megaphonepods
 - type: Website

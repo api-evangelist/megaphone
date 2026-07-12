@@ -1,0 +1,18 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/megaphone-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: tokenAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: 'Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`. Generated
+    on account creation and managed under User Settings; treat as a password and do not reuse
+    across organizations.'
+  sources:
+  - openapi/megaphone-openapi.yml
