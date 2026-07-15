@@ -140,6 +140,8 @@ apis:
     measurement and reporting. Endpoint shapes are modeled from the documented
     service descriptions.
 common:
+- type: AgenticAccess
+  url: agentic-access/megaphone-agentic-access.yml
 - type: VulnerabilityDisclosure
   url: security/megaphone-vulnerability-disclosure.yml
 - type: DomainSecurity
