@@ -1,0 +1,230 @@
+openapi: 3.0.3
+info:
+  title: Megaphone Campaigns Episodes API
+  description: 'The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token="<TOKEN>"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel="next"). The API is rate limited to 60 requests per minute (1 request per second).
+
+    Documentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone''s docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.'
+  version: '2.0'
+  contact:
+    name: Megaphone by Spotify
+    url: https://developers.megaphone.fm/
+  x-support-email: support-megaphone@spotify.com
+servers:
+- url: https://cms.megaphone.fm/api
+  description: Megaphone API v1 (networks, podcasts, episodes, legacy Direct Sales)
+- url: https://cms.megaphone.fm/api/v2
+  description: Megaphone Direct Sales API v2 (advertisers, campaigns, orders, assets, advertisements, targeting)
+security:
+- tokenAuth: []
+tags:
+- name: Episodes
+  description: Episodes within a podcast, including dynamic ad insertion.
+paths:
+  /networks/{network_id}/podcasts/{podcast_id}/episodes:
+    parameters:
+    - $ref: '#/components/parameters/NetworkId'
+    - $ref: '#/components/parameters/PodcastId'
+    get:
+      operationId: listEpisodes
+      tags:
+      - Episodes
+      summary: List episodes in a podcast
+      description: Lists episodes for a podcast. Set draft=true to include drafts. Paginated via the Link header.
+      parameters:
+      - name: draft
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Include draft episodes.
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: A page of episodes.
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: createEpisode
+      tags:
+      - Episodes
+      summary: Create an episode
+      description: Creates a new episode under a podcast, optionally with audio and ad-insertion configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Episode'
+      responses:
+        '201':
+          description: The created episode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /networks/{network_id}/podcasts/{podcast_id}/episodes/{episode_id}:
+    parameters:
+    - $ref: '#/components/parameters/NetworkId'
+    - $ref: '#/components/parameters/PodcastId'
+    - $ref: '#/components/parameters/EpisodeId'
+    get:
+      operationId: getEpisode
+      tags:
+      - Episodes
+      summary: Retrieve an episode
+      description: Retrieves a single episode by ID.
+      responses:
+        '200':
+          description: The requested episode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updateEpisode
+      tags:
+      - Episodes
+      summary: Update an episode
+      description: Updates an existing episode.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Episode'
+      responses:
+        '200':
+          description: The updated episode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      operationId: deleteEpisode
+      tags:
+      - Episodes
+      summary: Delete an episode
+      description: Deletes an episode.
+      responses:
+        '204':
+          description: Episode deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: Page number for Link-header pagination.
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items per page.
+    PodcastId:
+      name: podcast_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The podcast identifier.
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
+    EpisodeId:
+      name: episode_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The episode identifier.
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Episode:
+      type: object
+      description: An episode within a podcast, including dynamic ad insertion configuration.
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        summary:
+          type: string
+        author:
+          type: string
+        pubdate:
+          type: string
+          format: date-time
+        draft:
+          type: boolean
+        explicit:
+          type: string
+        audioFile:
+          type: string
+        duration:
+          type: number
+        insertionPoints:
+          type: array
+          description: Cue points (seconds) for dynamic ad insertion.
+          items:
+            type: number
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+  headers:
+    Link:
+      description: RFC 5988 Link header carrying pagination relations, including rel="next".
+      schema:
+        type: string
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`. Generated on account creation and managed under User Settings; treat as a password and do not reuse across organizations.'

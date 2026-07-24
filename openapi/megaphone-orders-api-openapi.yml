@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: Megaphone Campaigns Orders API
+  description: 'The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token="<TOKEN>"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel="next"). The API is rate limited to 60 requests per minute (1 request per second).
+
+    Documentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone''s docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.'
+  version: '2.0'
+  contact:
+    name: Megaphone by Spotify
+    url: https://developers.megaphone.fm/
+  x-support-email: support-megaphone@spotify.com
+servers:
+- url: https://cms.megaphone.fm/api
+  description: Megaphone API v1 (networks, podcasts, episodes, legacy Direct Sales)
+- url: https://cms.megaphone.fm/api/v2
+  description: Megaphone Direct Sales API v2 (advertisers, campaigns, orders, assets, advertisements, targeting)
+security:
+- tokenAuth: []
+tags:
+- name: Orders
+  description: Legacy Direct Sales campaign and promo orders and their advertisements.
+paths:
+  /organizations/{organization_id}/campaigns/{campaign_id}/orders:
+    get:
+      operationId: listCampaignOrders
+      tags:
+      - Orders
+      summary: List orders for a campaign (legacy Direct Sales)
+      description: Lists the orders (campaign orders and promo orders) attached to a campaign.
+      parameters:
+      - $ref: '#/components/parameters/OrganizationId'
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A list of orders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /orders/{order_id}/advertisements:
+    get:
+      operationId: listOrderAdvertisements
+      tags:
+      - Orders
+      summary: List advertisements for an order (legacy Direct Sales)
+      description: Lists the advertisements attached to a campaign order or promo order.
+      parameters:
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A list of advertisements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Advertisement'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    OrganizationId:
+      name: organization_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The organization identifier for Direct Sales resources.
+  schemas:
+    Order:
+      type: object
+      description: A campaign order or promo order under a campaign.
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+        type:
+          type: string
+          description: campaign or promo.
+        name:
+          type: string
+        status:
+          type: string
+    Advertisement:
+      type: object
+      description: An advertisement attached to an order.
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        assetId:
+          type: string
+        adType:
+          type: string
+        position:
+          type: string
+          description: preroll, midroll, or postroll.
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`. Generated on account creation and managed under User Settings; treat as a password and do not reuse across organizations.'

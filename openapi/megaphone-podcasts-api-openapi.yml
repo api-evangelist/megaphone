@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Megaphone Campaigns Podcasts API
+  description: 'The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token="<TOKEN>"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel="next"). The API is rate limited to 60 requests per minute (1 request per second).
+
+    Documentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone''s docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.'
+  version: '2.0'
+  contact:
+    name: Megaphone by Spotify
+    url: https://developers.megaphone.fm/
+  x-support-email: support-megaphone@spotify.com
+servers:
+- url: https://cms.megaphone.fm/api
+  description: Megaphone API v1 (networks, podcasts, episodes, legacy Direct Sales)
+- url: https://cms.megaphone.fm/api/v2
+  description: Megaphone Direct Sales API v2 (advertisers, campaigns, orders, assets, advertisements, targeting)
+security:
+- tokenAuth: []
+tags:
+- name: Podcasts
+  description: Shows within a network, including feed and monetization settings.
+paths:
+  /networks/{network_id}/podcasts:
+    get:
+      operationId: listPodcasts
+      tags:
+      - Podcasts
+      summary: List podcasts in a network
+      description: Lists podcasts belonging to a network. Paginated via the Link header.
+      parameters:
+      - $ref: '#/components/parameters/NetworkId'
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: A page of podcasts.
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: createPodcast
+      tags:
+      - Podcasts
+      summary: Create a podcast
+      description: Creates a new podcast within a network.
+      parameters:
+      - $ref: '#/components/parameters/NetworkId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Podcast'
+      responses:
+        '201':
+          description: The created podcast.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /networks/{network_id}/podcasts/{podcast_id}:
+    parameters:
+    - $ref: '#/components/parameters/NetworkId'
+    - $ref: '#/components/parameters/PodcastId'
+    get:
+      operationId: getPodcast
+      tags:
+      - Podcasts
+      summary: Retrieve a podcast
+      description: Retrieves a single podcast by ID.
+      responses:
+        '200':
+          description: The requested podcast.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updatePodcast
+      tags:
+      - Podcasts
+      summary: Update a podcast
+      description: Updates an existing podcast.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Podcast'
+      responses:
+        '200':
+          description: The updated podcast.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      operationId: deletePodcast
+      tags:
+      - Podcasts
+      summary: Delete a podcast
+      description: Deletes a podcast.
+      responses:
+        '204':
+          description: Podcast deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: Page number for Link-header pagination.
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items per page.
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
+    PodcastId:
+      name: podcast_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The podcast identifier.
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Podcast:
+      type: object
+      description: A podcast (show) within a network.
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        author:
+          type: string
+        summary:
+          type: string
+        link:
+          type: string
+        imageFile:
+          type: string
+        itunesCategories:
+          type: array
+          items:
+            type: string
+        language:
+          type: string
+        explicit:
+          type: string
+        podType:
+          type: string
+          description: episodic or serial.
+        adFree:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+  headers:
+    Link:
+      description: RFC 5988 Link header carrying pagination relations, including rel="next".
+      schema:
+        type: string
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`. Generated on account creation and managed under User Settings; treat as a password and do not reuse across organizations.'

@@ -1,0 +1,242 @@
+openapi: 3.0.3
+info:
+  title: Megaphone Campaigns Direct Sales v2 API
+  description: 'The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token="<TOKEN>"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel="next"). The API is rate limited to 60 requests per minute (1 request per second).
+
+    Documentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone''s docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.'
+  version: '2.0'
+  contact:
+    name: Megaphone by Spotify
+    url: https://developers.megaphone.fm/
+  x-support-email: support-megaphone@spotify.com
+servers:
+- url: https://cms.megaphone.fm/api
+  description: Megaphone API v1 (networks, podcasts, episodes, legacy Direct Sales)
+- url: https://cms.megaphone.fm/api/v2
+  description: Megaphone Direct Sales API v2 (advertisers, campaigns, orders, assets, advertisements, targeting)
+security:
+- tokenAuth: []
+tags:
+- name: Direct Sales v2
+  description: v2 advertisers, campaigns, orders, assets, advertisements, and targeting (modeled).
+paths:
+  /v2/advertisers:
+    servers:
+    - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listAdvertisersV2
+      tags:
+      - Direct Sales v2
+      summary: List advertisers (v2, modeled)
+      description: Lists advertisers in the v2 Direct Sales API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of advertisers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Advertiser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createAdvertiserV2
+      tags:
+      - Direct Sales v2
+      summary: Create an advertiser (v2, modeled)
+      description: Creates an advertiser in the v2 Direct Sales API. Path modeled from documented resources.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Advertiser'
+      responses:
+        '201':
+          description: The created advertiser.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertiser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/campaigns:
+    servers:
+    - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listCampaignsV2
+      tags:
+      - Direct Sales v2
+      summary: List campaigns (v2, modeled)
+      description: Lists direct-sales campaigns in the v2 API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of campaigns.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Campaign'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/orders:
+    servers:
+    - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listOrdersV2
+      tags:
+      - Direct Sales v2
+      summary: List orders (v2, modeled)
+      description: Lists direct-sales orders in the v2 API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of orders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/assets:
+    servers:
+    - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listAssetsV2
+      tags:
+      - Direct Sales v2
+      summary: List creative assets (v2, modeled)
+      description: Lists creative assets used by advertisements in the v2 API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of assets.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/targeting:
+    servers:
+    - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: getTargetingOptionsV2
+      tags:
+      - Direct Sales v2
+      summary: List targeting options (v2, modeled)
+      description: Lists targeting reference data (geos - countries, regions, DMAs - devices, Nielsen segments, and advertiser categories) available to v2 advertisements. Path modeled from documented resources.
+      responses:
+        '200':
+          description: Targeting options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetingOptions'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    Advertiser:
+      type: object
+      description: An advertiser (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        agencyId:
+          type: string
+        categoryId:
+          type: string
+    TargetingOptions:
+      type: object
+      description: Reference data available for targeting v2 advertisements.
+      properties:
+        countries:
+          type: array
+          items:
+            type: string
+        regions:
+          type: array
+          items:
+            type: string
+        dmas:
+          type: array
+          items:
+            type: string
+        devices:
+          type: array
+          items:
+            type: string
+        nielsenSegments:
+          type: array
+          items:
+            type: string
+    Campaign:
+      type: object
+      description: A direct-sales advertising campaign.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        advertiserId:
+          type: string
+        startsAt:
+          type: string
+          format: date
+        endsAt:
+          type: string
+          format: date
+    Order:
+      type: object
+      description: A campaign order or promo order under a campaign.
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+        type:
+          type: string
+          description: campaign or promo.
+        name:
+          type: string
+        status:
+          type: string
+    Asset:
+      type: object
+      description: A creative asset used by an advertisement (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        durationSeconds:
+          type: number
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`. Generated on account creation and managed under User Settings; treat as a password and do not reuse across organizations.'
