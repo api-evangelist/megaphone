@@ -1,0 +1,26 @@
+{
+  "provider": "megaphone",
+  "sources": [
+    "megaphone-campaigns-api-openapi.yml",
+    "megaphone-direct-sales-v2-api-openapi.yml",
+    "megaphone-episodes-api-openapi.yml",
+    "megaphone-exports-api-openapi.yml",
+    "megaphone-networks-api-openapi.yml",
+    "megaphone-orders-api-openapi.yml",
+    "megaphone-podcasts-api-openapi.yml"
+  ],
+  "outputs": [
+    "megaphone-campaigns-api-openapi.yml",
+    "megaphone-direct-sales-v2-api-openapi.yml",
+    "megaphone-episodes-api-openapi.yml",
+    "megaphone-exports-api-openapi.yml",
+    "megaphone-networks-api-openapi.yml",
+    "megaphone-orders-api-openapi.yml",
+    "megaphone-podcasts-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
