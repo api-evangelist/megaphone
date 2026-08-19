@@ -1,0 +1,159 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Megaphone Campaigns Podcasts API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Podcasts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List podcasts in a network",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for Link-header pagination."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Number of items per page."
+              }
+            ]
+          },
+          "docs": "Lists podcasts belonging to a network. Paginated via the Link header."
+        },
+        {
+          "info": {
+            "name": "Create a podcast",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new podcast within a network."
+        },
+        {
+          "info": {
+            "name": "Retrieve a podcast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves a single podcast by ID."
+        },
+        {
+          "info": {
+            "name": "Update a podcast",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing podcast."
+        },
+        {
+          "info": {
+            "name": "Delete a podcast",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              }
+            ]
+          },
+          "docs": "Deletes a podcast."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

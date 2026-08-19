@@ -1,0 +1,378 @@
+{
+  "item": [
+    {
+      "id": "e13ea17d-e4da-4ed3-a005-309296c7c43c",
+      "name": "Orders",
+      "description": {
+        "content": "Legacy Direct Sales campaign and promo orders and their advertisements.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "711f79d0-c870-4c59-b666-b50c0452d3f1",
+          "name": "List orders for a campaign (legacy Direct Sales)",
+          "request": {
+            "name": "List orders for a campaign (legacy Direct Sales)",
+            "description": {
+              "content": "Lists the orders (campaign orders and promo orders) attached to a campaign.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organizations",
+                ":organization_id",
+                "campaigns",
+                ":campaign_id",
+                "orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "organization_id",
+                  "description": "(Required) The organization identifier for Direct Sales resources."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "campaign_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2571eea0-66be-4a6a-80c1-237c37e202a1",
+              "name": "A list of orders.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":organization_id",
+                    "campaigns",
+                    ":campaign_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "organization_id",
+                      "description": "(Required) The organization identifier for Direct Sales resources."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "campaign_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"campaignId\": \"string\",\n    \"type\": \"string\",\n    \"name\": \"string\",\n    \"status\": \"string\"\n  },\n  {\n    \"id\": \"string\",\n    \"campaignId\": \"string\",\n    \"type\": \"string\",\n    \"name\": \"string\",\n    \"status\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d3070a7f-d6f0-4595-8833-05ff9ce37b1c",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organizations",
+                    ":organization_id",
+                    "campaigns",
+                    ":campaign_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "organization_id",
+                      "description": "(Required) The organization identifier for Direct Sales resources."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "campaign_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "aa5c6c51-79bd-402a-94ce-8f0e90e8323d",
+          "name": "List advertisements for an order (legacy Direct Sales)",
+          "request": {
+            "name": "List advertisements for an order (legacy Direct Sales)",
+            "description": {
+              "content": "Lists the advertisements attached to a campaign order or promo order.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ":order_id",
+                "advertisements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "order_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "122d7294-9aeb-4c12-b44d-e1aac824c79e",
+              "name": "A list of advertisements.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":order_id",
+                    "advertisements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"orderId\": \"string\",\n    \"assetId\": \"string\",\n    \"adType\": \"string\",\n    \"position\": \"string\"\n  },\n  {\n    \"id\": \"string\",\n    \"orderId\": \"string\",\n    \"assetId\": \"string\",\n    \"adType\": \"string\",\n    \"position\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cb82dbed-e27d-4958-949f-4e54e9dc446b",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":order_id",
+                    "advertisements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "919ea2bc-0e5f-485e-b71c-958a4b4fa221",
+    "name": "Megaphone Campaigns Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token=\"<TOKEN>\"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel=\"next\"). The API is rate limited to 60 requests per minute (1 request per second).\nDocumentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone's docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.\n\nContact Support:\n Name: Megaphone by Spotify",
+      "type": "text/plain"
+    }
+  }
+}

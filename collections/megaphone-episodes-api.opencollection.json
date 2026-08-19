@@ -1,0 +1,195 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Megaphone Campaigns Episodes API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Episodes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List episodes in a podcast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              },
+              {
+                "name": "draft",
+                "value": "",
+                "type": "query",
+                "description": "Include draft episodes."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for Link-header pagination."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Number of items per page."
+              }
+            ]
+          },
+          "docs": "Lists episodes for a podcast. Set draft=true to include drafts. Paginated via the Link header."
+        },
+        {
+          "info": {
+            "name": "Create an episode",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new episode under a podcast, optionally with audio and ad-insertion configuration."
+        },
+        {
+          "info": {
+            "name": "Retrieve an episode",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              },
+              {
+                "name": "episode_id",
+                "value": "",
+                "type": "path",
+                "description": "The episode identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves a single episode by ID."
+        },
+        {
+          "info": {
+            "name": "Update an episode",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              },
+              {
+                "name": "episode_id",
+                "value": "",
+                "type": "path",
+                "description": "The episode identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing episode."
+        },
+        {
+          "info": {
+            "name": "Delete an episode",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://cms.megaphone.fm/api/networks/:network_id/podcasts/:podcast_id/episodes/:episode_id",
+            "params": [
+              {
+                "name": "network_id",
+                "value": "",
+                "type": "path",
+                "description": "The network (account container) identifier."
+              },
+              {
+                "name": "podcast_id",
+                "value": "",
+                "type": "path",
+                "description": "The podcast identifier."
+              },
+              {
+                "name": "episode_id",
+                "value": "",
+                "type": "path",
+                "description": "The episode identifier."
+              }
+            ]
+          },
+          "docs": "Deletes an episode."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,847 @@
+{
+  "item": [
+    {
+      "id": "bd83489b-b35e-461a-acbf-e5631ab51829",
+      "name": "Direct Sales v2",
+      "description": {
+        "content": "v2 advertisers, campaigns, orders, assets, advertisements, and targeting (modeled).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "65dce12c-3218-450b-bbe5-0f2a61deb252",
+          "name": "List advertisers (v2, modeled)",
+          "request": {
+            "name": "List advertisers (v2, modeled)",
+            "description": {
+              "content": "Lists advertisers in the v2 Direct Sales API. Path modeled from documented resources.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "advertisers"
+              ],
+              "host": [
+                "{{v2-advertisers-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "deb55c98-0b6b-4d4e-9491-35b0ac05935e",
+              "name": "A list of advertisers.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "advertisers"
+                  ],
+                  "host": [
+                    "{{v2-advertisers-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"agencyId\": \"string\",\n    \"categoryId\": \"string\"\n  },\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"agencyId\": \"string\",\n    \"categoryId\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "58e8afe6-9039-44de-b689-49e9b744a02f",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "advertisers"
+                  ],
+                  "host": [
+                    "{{v2-advertisers-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f07135e6-9edf-4331-aac0-069b6242652f",
+          "name": "Create an advertiser (v2, modeled)",
+          "request": {
+            "name": "Create an advertiser (v2, modeled)",
+            "description": {
+              "content": "Creates an advertiser in the v2 Direct Sales API. Path modeled from documented resources.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "advertisers"
+              ],
+              "host": [
+                "{{v2-advertisers-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\",\n  \"name\": \"<string>\",\n  \"agencyId\": \"<string>\",\n  \"categoryId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d036938d-8240-48bc-bb1b-ac51739a82bc",
+              "name": "The created advertiser.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "advertisers"
+                  ],
+                  "host": [
+                    "{{v2-advertisers-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"name\": \"<string>\",\n  \"agencyId\": \"<string>\",\n  \"categoryId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"<string>\",\n  \"name\": \"<string>\",\n  \"agencyId\": \"<string>\",\n  \"categoryId\": \"<string>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9bb148c1-541c-433b-b49f-5750292c8661",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "advertisers"
+                  ],
+                  "host": [
+                    "{{v2-advertisers-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"name\": \"<string>\",\n  \"agencyId\": \"<string>\",\n  \"categoryId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a56c7118-e496-4bff-929c-5453936f0070",
+          "name": "List campaigns (v2, modeled)",
+          "request": {
+            "name": "List campaigns (v2, modeled)",
+            "description": {
+              "content": "Lists direct-sales campaigns in the v2 API. Path modeled from documented resources.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "campaigns"
+              ],
+              "host": [
+                "{{v2-campaigns-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7a2df332-3592-4cda-87ea-c8975370a4b5",
+              "name": "A list of campaigns.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{v2-campaigns-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"advertiserId\": \"string\",\n    \"startsAt\": \"1980-11-27\",\n    \"endsAt\": \"2023-04-12\"\n  },\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"advertiserId\": \"string\",\n    \"startsAt\": \"2007-03-15\",\n    \"endsAt\": \"1999-08-06\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "556c2715-281f-43f6-9312-82487f3edc42",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{v2-campaigns-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fdacb9b5-0367-4743-9cc5-9713b90c1b4f",
+          "name": "List orders (v2, modeled)",
+          "request": {
+            "name": "List orders (v2, modeled)",
+            "description": {
+              "content": "Lists direct-sales orders in the v2 API. Path modeled from documented resources.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "orders"
+              ],
+              "host": [
+                "{{v2-orders-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e57c2764-14e4-43b7-8fde-40c63cd06a2a",
+              "name": "A list of orders.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{v2-orders-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"campaignId\": \"string\",\n    \"type\": \"string\",\n    \"name\": \"string\",\n    \"status\": \"string\"\n  },\n  {\n    \"id\": \"string\",\n    \"campaignId\": \"string\",\n    \"type\": \"string\",\n    \"name\": \"string\",\n    \"status\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c2ff5dad-39d0-4087-8e65-615bd7f4dad9",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{v2-orders-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7e1e3ebe-3f71-4124-b6ee-be964d2694f4",
+          "name": "List creative assets (v2, modeled)",
+          "request": {
+            "name": "List creative assets (v2, modeled)",
+            "description": {
+              "content": "Lists creative assets used by advertisements in the v2 API. Path modeled from documented resources.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "assets"
+              ],
+              "host": [
+                "{{v2-assets-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3670a4f4-be96-4f4e-a472-cd52b18242e4",
+              "name": "A list of assets.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "assets"
+                  ],
+                  "host": [
+                    "{{v2-assets-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"url\": \"string\",\n    \"durationSeconds\": 1416.5980792581734\n  },\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"url\": \"string\",\n    \"durationSeconds\": 195.1613996984569\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bc157703-567a-4536-8b74-9df22506549d",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "assets"
+                  ],
+                  "host": [
+                    "{{v2-assets-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6390b43a-3810-4350-9f88-0ecb3c42bc12",
+          "name": "List targeting options (v2, modeled)",
+          "request": {
+            "name": "List targeting options (v2, modeled)",
+            "description": {
+              "content": "Lists targeting reference data (geos - countries, regions, DMAs - devices, Nielsen segments, and advertiser categories) available to v2 advertisements. Path modeled from documented resources.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "targeting"
+              ],
+              "host": [
+                "{{v2-targeting-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "51b84474-57b5-49b5-9932-0f3cdf84bd84",
+              "name": "Targeting options.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "targeting"
+                  ],
+                  "host": [
+                    "{{v2-targeting-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"countries\": [\n    \"string\",\n    \"string\"\n  ],\n  \"regions\": [\n    \"string\",\n    \"string\"\n  ],\n  \"dmas\": [\n    \"string\",\n    \"string\"\n  ],\n  \"devices\": [\n    \"string\",\n    \"string\"\n  ],\n  \"nielsenSegments\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25a85e38-8879-4f21-94d9-a642237c7a9c",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "targeting"
+                  ],
+                  "host": [
+                    "{{v2-targeting-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api/v2",
+      "key": "v2-advertisers-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api/v2",
+      "key": "v2-campaigns-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api/v2",
+      "key": "v2-orders-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api/v2",
+      "key": "v2-assets-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api/v2",
+      "key": "v2-targeting-Url"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "68a3d833-989a-43a9-9bf7-7c875be33fb5",
+    "name": "Megaphone Campaigns Direct Sales v2 API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token=\"<TOKEN>\"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel=\"next\"). The API is rate limited to 60 requests per minute (1 request per second).\nDocumentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone's docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.\n\nContact Support:\n Name: Megaphone by Spotify",
+      "type": "text/plain"
+    }
+  }
+}

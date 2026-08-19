@@ -1,0 +1,72 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Megaphone Campaigns Exports API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Exports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Export metrics (modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/metrics_export",
+            "params": [
+              {
+                "name": "start",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Pull-based bulk export of download and listener metrics via the Metrics Export Service. Path and parameters are modeled from the documented service description."
+        },
+        {
+          "info": {
+            "name": "Export ad impressions (modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/impressions_export",
+            "params": [
+              {
+                "name": "start",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Pull-based bulk export of ad-impression data via the Impressions Export Service. Path and parameters are modeled from the documented service description."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

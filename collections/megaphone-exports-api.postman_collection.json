@@ -1,0 +1,341 @@
+{
+  "item": [
+    {
+      "id": "ab2ed450-6771-4a9a-8340-22f1403aefb6",
+      "name": "Exports",
+      "description": {
+        "content": "Metrics Export Service and Impressions Export Service (modeled).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "fdb2177b-1327-43aa-ab33-13b5ab0ebd4c",
+          "name": "Export metrics (modeled)",
+          "request": {
+            "name": "Export metrics (modeled)",
+            "description": {
+              "content": "Pull-based bulk export of download and listener metrics via the Metrics Export Service. Path and parameters are modeled from the documented service description.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "metrics_export"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<date>"
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<date>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9a600517-b589-4421-8bbb-e169faf57ef7",
+              "name": "A metrics export payload.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics_export"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "37a09259-1ee7-4d94-b760-e6f822202dac",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics_export"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "aacccb53-2d46-4782-b49d-2e0788320d31",
+          "name": "Export ad impressions (modeled)",
+          "request": {
+            "name": "Export ad impressions (modeled)",
+            "description": {
+              "content": "Pull-based bulk export of ad-impression data via the Impressions Export Service. Path and parameters are modeled from the documented service description.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "impressions_export"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<date>"
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<date>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0db95d22-4579-4970-a43b-e159994056ab",
+              "name": "An impressions export payload.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "impressions_export"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "84e2548d-a08b-4750-97d3-e16e0ce9517a",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "impressions_export"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "8e270a42-cb8a-4fe8-ad98-6d8b24f2e1b4",
+    "name": "Megaphone Campaigns Exports API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token=\"<TOKEN>\"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel=\"next\"). The API is rate limited to 60 requests per minute (1 request per second).\nDocumentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone's docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.\n\nContact Support:\n Name: Megaphone by Spotify",
+      "type": "text/plain"
+    }
+  }
+}

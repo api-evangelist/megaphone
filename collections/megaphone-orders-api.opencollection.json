@@ -1,0 +1,68 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Megaphone Campaigns Orders API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List orders for a campaign (legacy Direct Sales)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/organizations/:organization_id/campaigns/:campaign_id/orders",
+            "params": [
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "The organization identifier for Direct Sales resources."
+              },
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Lists the orders (campaign orders and promo orders) attached to a campaign."
+        },
+        {
+          "info": {
+            "name": "List advertisements for an order (legacy Direct Sales)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/orders/:order_id/advertisements",
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Lists the advertisements attached to a campaign order or promo order."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

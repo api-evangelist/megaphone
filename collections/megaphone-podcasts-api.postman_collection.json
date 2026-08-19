@@ -1,0 +1,1090 @@
+{
+  "item": [
+    {
+      "id": "cc45ba26-2aac-4986-b90d-3cc7e746c313",
+      "name": "Podcasts",
+      "description": {
+        "content": "Shows within a network, including feed and monetization settings.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "26ec1d3d-aa4c-49d8-952c-2d07f93c3b29",
+          "name": "List podcasts in a network",
+          "request": {
+            "name": "List podcasts in a network",
+            "description": {
+              "content": "Lists podcasts belonging to a network. Paginated via the Link header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "networks",
+                ":network_id",
+                "podcasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "Page number for Link-header pagination."
+                },
+                {
+                  "disabled": false,
+                  "key": "per_page",
+                  "value": "<integer>",
+                  "description": "Number of items per page."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "network_id",
+                  "description": "(Required) The network (account container) identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3f16b6ee-68c7-4152-9888-26d854182922",
+              "name": "A page of podcasts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "RFC 5988 Link header carrying pagination relations, including rel=\"next\".",
+                  "key": "Link",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"title\": \"string\",\n    \"subtitle\": \"string\",\n    \"author\": \"string\",\n    \"summary\": \"string\",\n    \"link\": \"string\",\n    \"imageFile\": \"string\",\n    \"itunesCategories\": [\n      \"string\",\n      \"string\"\n    ],\n    \"language\": \"string\",\n    \"explicit\": \"string\",\n    \"podType\": \"string\",\n    \"adFree\": true\n  },\n  {\n    \"id\": \"string\",\n    \"title\": \"string\",\n    \"subtitle\": \"string\",\n    \"author\": \"string\",\n    \"summary\": \"string\",\n    \"link\": \"string\",\n    \"imageFile\": \"string\",\n    \"itunesCategories\": [\n      \"string\",\n      \"string\"\n    ],\n    \"language\": \"string\",\n    \"explicit\": \"string\",\n    \"podType\": \"string\",\n    \"adFree\": false\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f3168693-f6fe-43fe-ac59-f7eefe1c883e",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b16415cd-72dc-4c7e-bebf-5e3112a8e723",
+              "name": "Rate limit exceeded (60 requests per minute).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6fdccda6-b2f7-4586-83a0-94160c3cdc31",
+          "name": "Create a podcast",
+          "request": {
+            "name": "Create a podcast",
+            "description": {
+              "content": "Creates a new podcast within a network.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "networks",
+                ":network_id",
+                "podcasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "network_id",
+                  "description": "(Required) The network (account container) identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "29b75144-261b-4f89-963c-2f2eb3f026b8",
+              "name": "The created podcast.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4b4b4fb-1805-4329-9195-10ed0d4ff7f8",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "69020a8d-c30f-4f00-8956-1a05c0d48d7b",
+              "name": "Rate limit exceeded (60 requests per minute).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f5a4569f-2495-4344-a08c-81946883a385",
+          "name": "Retrieve a podcast",
+          "request": {
+            "name": "Retrieve a podcast",
+            "description": {
+              "content": "Retrieves a single podcast by ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "networks",
+                ":network_id",
+                "podcasts",
+                ":podcast_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "network_id",
+                  "description": "(Required) The network (account container) identifier."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "podcast_id",
+                  "description": "(Required) The podcast identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5ff2a2fd-e063-4981-8f0a-7ad3b023cc00",
+              "name": "The requested podcast.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts",
+                    ":podcast_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "podcast_id",
+                      "description": "(Required) The podcast identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "223d41d5-282f-4ee4-8f45-0e4018ca2029",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts",
+                    ":podcast_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "podcast_id",
+                      "description": "(Required) The podcast identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fbfdd011-6672-4287-8431-b921b2261bbe",
+          "name": "Update a podcast",
+          "request": {
+            "name": "Update a podcast",
+            "description": {
+              "content": "Updates an existing podcast.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "networks",
+                ":network_id",
+                "podcasts",
+                ":podcast_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "network_id",
+                  "description": "(Required) The network (account container) identifier."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "podcast_id",
+                  "description": "(Required) The podcast identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3a5a0ed5-e05f-41aa-b6db-09fb1850e1cb",
+              "name": "The updated podcast.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts",
+                    ":podcast_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "podcast_id",
+                      "description": "(Required) The podcast identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc0ec3fb-3ae1-480f-b5fc-e9f0667b5be6",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts",
+                    ":podcast_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "podcast_id",
+                      "description": "(Required) The podcast identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"title\": \"<string>\",\n  \"subtitle\": \"<string>\",\n  \"author\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"link\": \"<string>\",\n  \"imageFile\": \"<string>\",\n  \"itunesCategories\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"language\": \"<string>\",\n  \"explicit\": \"<string>\",\n  \"podType\": \"<string>\",\n  \"adFree\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dd60f4b4-3286-4340-a7df-69cf198a152a",
+          "name": "Delete a podcast",
+          "request": {
+            "name": "Delete a podcast",
+            "description": {
+              "content": "Deletes a podcast.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "networks",
+                ":network_id",
+                "podcasts",
+                ":podcast_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "network_id",
+                  "description": "(Required) The network (account container) identifier."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "podcast_id",
+                  "description": "(Required) The podcast identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9ac49229-2159-465f-b8b4-416f84f0665b",
+              "name": "Podcast deleted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts",
+                    ":podcast_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "podcast_id",
+                      "description": "(Required) The podcast identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "94155f63-55c6-481b-be79-a885b20c1d88",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "networks",
+                    ":network_id",
+                    "podcasts",
+                    ":podcast_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "network_id",
+                      "description": "(Required) The network (account container) identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "podcast_id",
+                      "description": "(Required) The podcast identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://cms.megaphone.fm/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "419cee80-ac3c-4d85-a981-5f58001072b2",
+    "name": "Megaphone Campaigns Podcasts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform. The v1 API (base https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy Direct Sales resources; a v2 Direct Sales API (base https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders, assets, advertisements, and targeting. All requests authenticate with a per-user API token sent as the header `Authorization: Token token=\"<TOKEN>\"`, generated under User Settings. List responses paginate via an RFC 5988 Link header (rel=\"next\"). The API is rate limited to 60 requests per minute (1 request per second).\nDocumentation is public, but a token requires a paid Megaphone account. The v1 network/podcast/episode/campaign/order/advertisement paths are confirmed from Megaphone's docs, the Apiary reference, and the open-source theatlantic/megaphone Python client. The v2 Direct Sales paths and the Metrics/Impressions export paths are honestly modeled from the documented resource descriptions where the exact reference was not publicly retrievable; verify against developers.megaphone.fm before production use.\n\nContact Support:\n Name: Megaphone by Spotify",
+      "type": "text/plain"
+    }
+  }
+}

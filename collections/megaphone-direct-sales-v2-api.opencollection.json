@@ -1,0 +1,96 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Megaphone Campaigns Direct Sales v2 API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Direct Sales v2",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List advertisers (v2, modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/v2/advertisers"
+          },
+          "docs": "Lists advertisers in the v2 Direct Sales API. Path modeled from documented resources."
+        },
+        {
+          "info": {
+            "name": "Create an advertiser (v2, modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cms.megaphone.fm/api/v2/advertisers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an advertiser in the v2 Direct Sales API. Path modeled from documented resources."
+        },
+        {
+          "info": {
+            "name": "List campaigns (v2, modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/v2/campaigns"
+          },
+          "docs": "Lists direct-sales campaigns in the v2 API. Path modeled from documented resources."
+        },
+        {
+          "info": {
+            "name": "List orders (v2, modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/v2/orders"
+          },
+          "docs": "Lists direct-sales orders in the v2 API. Path modeled from documented resources."
+        },
+        {
+          "info": {
+            "name": "List creative assets (v2, modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/v2/assets"
+          },
+          "docs": "Lists creative assets used by advertisements in the v2 API. Path modeled from documented resources."
+        },
+        {
+          "info": {
+            "name": "List targeting options (v2, modeled)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cms.megaphone.fm/api/v2/targeting"
+          },
+          "docs": "Lists targeting reference data (geos - countries, regions, DMAs - devices, Nielsen segments, and advertiser categories) available to v2 advertisements. Path modeled from documented resources."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
