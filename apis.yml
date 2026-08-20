@@ -93,6 +93,8 @@ apis:
   humanURL: https://developers.megaphone.fm/
   baseURL: https://cms.megaphone.fm/api
   tags:
+  - Export
+  tags_raw:
   - Exports
   properties:
   - type: OpenAPI
@@ -127,6 +129,8 @@ apis:
   humanURL: https://developers.megaphone.fm/
   baseURL: https://cms.megaphone.fm/api
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
