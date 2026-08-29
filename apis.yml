@@ -10,6 +10,18 @@ description: Megaphone (Megaphone by Spotify) is an enterprise podcast hosting,
   orders, advertisements, advertisers, and targeting - plus pull metrics and
   impressions via export services. API documentation is public, but an API token
   requires a paid Megaphone account (Professional from $99/month, or Enterprise).
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
