@@ -1,13 +1,7 @@
 {
   "provider": "megaphone",
   "sources": [
-    "megaphone-campaigns-api-openapi.yml",
-    "megaphone-direct-sales-v2-api-openapi.yml",
-    "megaphone-episodes-api-openapi.yml",
-    "megaphone-exports-api-openapi.yml",
-    "megaphone-networks-api-openapi.yml",
-    "megaphone-orders-api-openapi.yml",
-    "megaphone-podcasts-api-openapi.yml"
+    "_original/megaphone-openapi.yml"
   ],
   "outputs": [
     "megaphone-campaigns-api-openapi.yml",
@@ -21,6 +15,18 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "megaphone-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "megaphone-campaigns-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "megaphone-direct-sales-v2-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "megaphone-episodes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "megaphone-exports-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "megaphone-networks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "megaphone-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "megaphone-podcasts-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
