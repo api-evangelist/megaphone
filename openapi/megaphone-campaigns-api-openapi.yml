@@ -39,22 +39,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  parameters:
-    OrganizationId:
-      name: organization_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The organization identifier for Direct Sales resources.
   schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
     Campaign:
       type: object
       description: A direct-sales advertising campaign.
@@ -71,6 +56,13 @@ components:
         endsAt:
           type: string
           format: date
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
   responses:
     Unauthorized:
       description: Missing or invalid API token.
@@ -78,6 +70,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    OrganizationId:
+      name: organization_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The organization identifier for Direct Sales resources.
   securitySchemes:
     tokenAuth:
       type: apiKey

@@ -122,20 +122,19 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    RateLimited:
-      description: Rate limit exceeded (60 requests per minute).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  headers:
+    Link:
+      description: RFC 5988 Link header carrying pagination relations, including rel="next".
+      schema:
+        type: string
   parameters:
+    PodcastId:
+      name: podcast_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The podcast identifier.
     Page:
       name: page
       in: query
@@ -144,13 +143,6 @@ components:
         type: integer
         minimum: 1
       description: Page number for Link-header pagination.
-    PodcastId:
-      name: podcast_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The podcast identifier.
     PerPage:
       name: per_page
       in: query
@@ -165,6 +157,19 @@ components:
       schema:
         type: string
       description: The network (account container) identifier.
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -204,11 +209,6 @@ components:
           description: episodic or serial.
         adFree:
           type: boolean
-  headers:
-    Link:
-      description: RFC 5988 Link header carrying pagination relations, including rel="next".
-      schema:
-        type: string
   securitySchemes:
     tokenAuth:
       type: apiKey

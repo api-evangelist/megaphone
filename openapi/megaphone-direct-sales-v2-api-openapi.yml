@@ -139,18 +139,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    Advertiser:
-      type: object
-      description: An advertiser (v2 Direct Sales).
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        agencyId:
-          type: string
-        categoryId:
-          type: string
     Campaign:
       type: object
       description: A direct-sales advertising campaign.
@@ -167,40 +155,6 @@ components:
         endsAt:
           type: string
           format: date
-    Asset:
-      type: object
-      description: A creative asset used by an advertisement (v2 Direct Sales).
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        url:
-          type: string
-        durationSeconds:
-          type: number
-    Order:
-      type: object
-      description: A campaign order or promo order under a campaign.
-      properties:
-        id:
-          type: string
-        campaignId:
-          type: string
-        type:
-          type: string
-          description: campaign or promo.
-        name:
-          type: string
-        status:
-          type: string
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
     TargetingOptions:
       type: object
       description: Reference data available for targeting v2 advertisements.
@@ -225,6 +179,52 @@ components:
           type: array
           items:
             type: string
+    Asset:
+      type: object
+      description: A creative asset used by an advertisement (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        durationSeconds:
+          type: number
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    Order:
+      type: object
+      description: A campaign order or promo order under a campaign.
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+        type:
+          type: string
+          description: campaign or promo.
+        name:
+          type: string
+        status:
+          type: string
+    Advertiser:
+      type: object
+      description: An advertiser (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        agencyId:
+          type: string
+        categoryId:
+          type: string
   responses:
     Unauthorized:
       description: Missing or invalid API token.

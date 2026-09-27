@@ -68,37 +68,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    OrganizationId:
-      name: organization_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The organization identifier for Direct Sales resources.
   schemas:
-    Order:
-      type: object
-      description: A campaign order or promo order under a campaign.
-      properties:
-        id:
-          type: string
-        campaignId:
-          type: string
-        type:
-          type: string
-          description: campaign or promo.
-        name:
-          type: string
-        status:
-          type: string
     Advertisement:
       type: object
       description: An advertisement attached to an order.
@@ -121,6 +91,36 @@ components:
           type: string
         message:
           type: string
+    Order:
+      type: object
+      description: A campaign order or promo order under a campaign.
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+        type:
+          type: string
+          description: campaign or promo.
+        name:
+          type: string
+        status:
+          type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    OrganizationId:
+      name: organization_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The organization identifier for Direct Sales resources.
   securitySchemes:
     tokenAuth:
       type: apiKey
