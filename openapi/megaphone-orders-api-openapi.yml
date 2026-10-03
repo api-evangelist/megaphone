@@ -69,6 +69,13 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
     Advertisement:
       type: object
       description: An advertisement attached to an order.
@@ -84,13 +91,6 @@ components:
         position:
           type: string
           description: preroll, midroll, or postroll.
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
     Order:
       type: object
       description: A campaign order or promo order under a campaign.
@@ -106,13 +106,6 @@ components:
           type: string
         status:
           type: string
-  responses:
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     OrganizationId:
       name: organization_id
@@ -121,6 +114,13 @@ components:
       schema:
         type: string
       description: The organization identifier for Direct Sales resources.
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     tokenAuth:
       type: apiKey

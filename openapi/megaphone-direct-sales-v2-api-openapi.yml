@@ -139,6 +139,25 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    Advertiser:
+      type: object
+      description: An advertiser (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        agencyId:
+          type: string
+        categoryId:
+          type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
     Campaign:
       type: object
       description: A direct-sales advertising campaign.
@@ -179,25 +198,6 @@ components:
           type: array
           items:
             type: string
-    Asset:
-      type: object
-      description: A creative asset used by an advertisement (v2 Direct Sales).
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        url:
-          type: string
-        durationSeconds:
-          type: number
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
     Order:
       type: object
       description: A campaign order or promo order under a campaign.
@@ -213,18 +213,18 @@ components:
           type: string
         status:
           type: string
-    Advertiser:
+    Asset:
       type: object
-      description: An advertiser (v2 Direct Sales).
+      description: A creative asset used by an advertisement (v2 Direct Sales).
       properties:
         id:
           type: string
         name:
           type: string
-        agencyId:
+        url:
           type: string
-        categoryId:
-          type: string
+        durationSeconds:
+          type: number
   responses:
     Unauthorized:
       description: Missing or invalid API token.

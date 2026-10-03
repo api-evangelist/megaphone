@@ -127,62 +127,14 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  headers:
-    Link:
-      description: RFC 5988 Link header carrying pagination relations, including rel="next".
-      schema:
-        type: string
-  parameters:
-    PodcastId:
-      name: podcast_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The podcast identifier.
-    Page:
-      name: page
-      in: query
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-      description: Page number for Link-header pagination.
-    PerPage:
-      name: per_page
-      in: query
-      required: false
-      schema:
-        type: integer
-      description: Number of items per page.
-    NetworkId:
-      name: network_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The network (account container) identifier.
-    EpisodeId:
-      name: episode_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The episode identifier.
-  responses:
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    RateLimited:
-      description: Rate limit exceeded (60 requests per minute).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
     Episode:
       type: object
       description: An episode within a podcast, including dynamic ad insertion configuration.
@@ -213,13 +165,61 @@ components:
           description: Cue points (seconds) for dynamic ad insertion.
           items:
             type: number
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
+  parameters:
+    EpisodeId:
+      name: episode_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The episode identifier.
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items per page.
+    PodcastId:
+      name: podcast_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The podcast identifier.
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: Page number for Link-header pagination.
+  responses:
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  headers:
+    Link:
+      description: RFC 5988 Link header carrying pagination relations, including rel="next".
+      schema:
+        type: string
   securitySchemes:
     tokenAuth:
       type: apiKey
