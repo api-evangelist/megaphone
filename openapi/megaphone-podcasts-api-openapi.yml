@@ -122,20 +122,28 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    RateLimited:
-      description: Rate limit exceeded (60 requests per minute).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
+    PodcastId:
+      name: podcast_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The podcast identifier.
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items per page.
     Page:
       name: page
       in: query
@@ -144,35 +152,20 @@ components:
         type: integer
         minimum: 1
       description: Page number for Link-header pagination.
-    PodcastId:
-      name: podcast_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The podcast identifier.
-    PerPage:
-      name: per_page
-      in: query
-      required: false
-      schema:
-        type: integer
-      description: Number of items per page.
-    NetworkId:
-      name: network_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The network (account container) identifier.
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
     Podcast:
       type: object
       description: A podcast (show) within a network.
@@ -204,6 +197,13 @@ components:
           description: episodic or serial.
         adFree:
           type: boolean
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
   headers:
     Link:
       description: RFC 5988 Link header carrying pagination relations, including rel="next".

@@ -39,14 +39,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  parameters:
-    OrganizationId:
-      name: organization_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The organization identifier for Direct Sales resources.
   schemas:
     Error:
       type: object
@@ -71,6 +63,14 @@ components:
         endsAt:
           type: string
           format: date
+  parameters:
+    OrganizationId:
+      name: organization_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The organization identifier for Direct Sales resources.
   responses:
     Unauthorized:
       description: Missing or invalid API token.

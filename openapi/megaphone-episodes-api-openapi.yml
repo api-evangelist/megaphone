@@ -127,20 +127,21 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    RateLimited:
-      description: Rate limit exceeded (60 requests per minute).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
+    PodcastId:
+      name: podcast_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The podcast identifier.
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
     Page:
       name: page
       in: query
@@ -156,13 +157,6 @@ components:
       schema:
         type: integer
       description: Number of items per page.
-    PodcastId:
-      name: podcast_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The podcast identifier.
     EpisodeId:
       name: episode_id
       in: path
@@ -170,13 +164,19 @@ components:
       schema:
         type: string
       description: The episode identifier.
-    NetworkId:
-      name: network_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The network (account container) identifier.
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Episode:
       type: object

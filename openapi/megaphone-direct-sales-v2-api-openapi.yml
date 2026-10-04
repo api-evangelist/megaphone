@@ -151,6 +151,21 @@ components:
           type: string
         categoryId:
           type: string
+    Order:
+      type: object
+      description: A campaign order or promo order under a campaign.
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+        type:
+          type: string
+          description: campaign or promo.
+        name:
+          type: string
+        status:
+          type: string
     Campaign:
       type: object
       description: A direct-sales advertising campaign.
@@ -167,33 +182,6 @@ components:
         endsAt:
           type: string
           format: date
-    Asset:
-      type: object
-      description: A creative asset used by an advertisement (v2 Direct Sales).
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        url:
-          type: string
-        durationSeconds:
-          type: number
-    Order:
-      type: object
-      description: A campaign order or promo order under a campaign.
-      properties:
-        id:
-          type: string
-        campaignId:
-          type: string
-        type:
-          type: string
-          description: campaign or promo.
-        name:
-          type: string
-        status:
-          type: string
     Error:
       type: object
       properties:
@@ -225,6 +213,18 @@ components:
           type: array
           items:
             type: string
+    Asset:
+      type: object
+      description: A creative asset used by an advertisement (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        durationSeconds:
+          type: number
   responses:
     Unauthorized:
       description: Missing or invalid API token.
