@@ -151,20 +151,12 @@ components:
           type: string
         categoryId:
           type: string
-    Order:
+    Error:
       type: object
-      description: A campaign order or promo order under a campaign.
       properties:
-        id:
+        error:
           type: string
-        campaignId:
-          type: string
-        type:
-          type: string
-          description: campaign or promo.
-        name:
-          type: string
-        status:
+        message:
           type: string
     Campaign:
       type: object
@@ -182,13 +174,6 @@ components:
         endsAt:
           type: string
           format: date
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
     TargetingOptions:
       type: object
       description: Reference data available for targeting v2 advertisements.
@@ -213,6 +198,21 @@ components:
           type: array
           items:
             type: string
+    Order:
+      type: object
+      description: A campaign order or promo order under a campaign.
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+        type:
+          type: string
+          description: campaign or promo.
+        name:
+          type: string
+        status:
+          type: string
     Asset:
       type: object
       description: A creative asset used by an advertisement (v2 Direct Sales).
