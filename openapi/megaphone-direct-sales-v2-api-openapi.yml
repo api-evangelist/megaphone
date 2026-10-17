@@ -139,18 +139,18 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    Advertiser:
+    Asset:
       type: object
-      description: An advertiser (v2 Direct Sales).
+      description: A creative asset used by an advertisement (v2 Direct Sales).
       properties:
         id:
           type: string
         name:
           type: string
-        agencyId:
+        url:
           type: string
-        categoryId:
-          type: string
+        durationSeconds:
+          type: number
     Error:
       type: object
       properties:
@@ -158,22 +158,6 @@ components:
           type: string
         message:
           type: string
-    Campaign:
-      type: object
-      description: A direct-sales advertising campaign.
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        advertiserId:
-          type: string
-        startsAt:
-          type: string
-          format: date
-        endsAt:
-          type: string
-          format: date
     TargetingOptions:
       type: object
       description: Reference data available for targeting v2 advertisements.
@@ -213,18 +197,34 @@ components:
           type: string
         status:
           type: string
-    Asset:
+    Campaign:
       type: object
-      description: A creative asset used by an advertisement (v2 Direct Sales).
+      description: A direct-sales advertising campaign.
       properties:
         id:
           type: string
         name:
           type: string
-        url:
+        advertiserId:
           type: string
-        durationSeconds:
-          type: number
+        startsAt:
+          type: string
+          format: date
+        endsAt:
+          type: string
+          format: date
+    Advertiser:
+      type: object
+      description: An advertiser (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        agencyId:
+          type: string
+        categoryId:
+          type: string
   responses:
     Unauthorized:
       description: Missing or invalid API token.

@@ -57,14 +57,6 @@ components:
           type: string
         podcastsCount:
           type: integer
-  parameters:
-    NetworkId:
-      name: network_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The network (account container) identifier.
   responses:
     RateLimited:
       description: Rate limit exceeded (60 requests per minute).
@@ -78,6 +70,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
   securitySchemes:
     tokenAuth:
       type: apiKey

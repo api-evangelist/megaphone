@@ -76,21 +76,6 @@ components:
           type: string
         message:
           type: string
-    Advertisement:
-      type: object
-      description: An advertisement attached to an order.
-      properties:
-        id:
-          type: string
-        orderId:
-          type: string
-        assetId:
-          type: string
-        adType:
-          type: string
-        position:
-          type: string
-          description: preroll, midroll, or postroll.
     Order:
       type: object
       description: A campaign order or promo order under a campaign.
@@ -106,6 +91,21 @@ components:
           type: string
         status:
           type: string
+    Advertisement:
+      type: object
+      description: An advertisement attached to an order.
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        assetId:
+          type: string
+        adType:
+          type: string
+        position:
+          type: string
+          description: preroll, midroll, or postroll.
   parameters:
     OrganizationId:
       name: organization_id
