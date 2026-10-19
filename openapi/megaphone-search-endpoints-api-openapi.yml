@@ -1,0 +1,629 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Search Endpoints API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Search Endpoints
+  description: '# Search
+
+
+    Megaphone provides a top-level search endpoint for various objects in our database. By default, these endpoints will return every instance of the object accessible to the requesting user. Adding query params to the url will scope the response but an array will always be returned.
+
+
+    **Note:** For all search endpoints, the `filterMax` parameter may be passed with or without a time value. When there is no time value or when the time value is 0 (e.g. `2022-04-15` or `2022-04-15T00:00:00.0Z`), `filterMax` will be rounded up to the end of the day, such that all values from that day are included.'
+paths:
+  /api/search/episodes:
+    get:
+      tags:
+      - Search Endpoints
+      summary: List All Episodes
+      description: Returns all episodes accessible by requesting user. Response can be scoped by external ID.
+      operationId: listAllEpisodesSearchEndpoints
+      parameters:
+      - name: externalId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: External identifier associated with Megaphone episode record
+        example: 123abc
+      - name: organizationId
+        in: query
+        required: false
+        schema:
+          type: string
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: published
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Allowed value is `true`. Default is blank (show all episodes, published or not)
+        example: 'true'
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Allowed values are `updatedAt` and `pubdate`. Default is `updatedAt`. Order is always descending
+        example: updatedAt
+      - name: filterBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Allowed values are `updatedAt` and `pubdate`. Default is `updatedAt`
+        example: updatedAt
+      - name: filterMin
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Minimum value (inclusive) for the field in `filterBy`
+        example: '2016-11-07T20:15:14.293Z'
+      - name: filterMax
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Maximum value (inclusive) for the field in `filterBy`
+        example: '2016-11-07T20:15:14.293Z'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    title:
+                      type: string
+                    pubdate:
+                      type: string
+                      format: date-time
+                    link:
+                      type: string
+                    author:
+                      type: string
+                    imageFile:
+                      type:
+                      - string
+                      - 'null'
+                    explicit:
+                      type:
+                      - string
+                      - 'null'
+                    episodeType:
+                      type: string
+                    seasonNumber:
+                      type: integer
+                    episodeNumber:
+                      type: integer
+                    subtitle:
+                      type: string
+                    summary:
+                      type: string
+                    audioFile:
+                      type:
+                      - string
+                      - 'null'
+                    size:
+                      type: integer
+                    duration:
+                      type: string
+                    uid:
+                      type: string
+                    originalUrl:
+                      type:
+                      - string
+                      - 'null'
+                    bitrate:
+                      type:
+                      - string
+                      - 'null'
+                    samplerate:
+                      type:
+                      - string
+                      - 'null'
+                    channelMode:
+                      type:
+                      - string
+                      - 'null'
+                    vbr:
+                      type:
+                      - string
+                      - 'null'
+                    audioFileProcessing:
+                      type: boolean
+                    podcastId:
+                      type: string
+                      format: uuid
+                    preCount:
+                      type: integer
+                    postCount:
+                      type: integer
+                    insertionPoints:
+                      type: array
+                      items: {}
+                    id3File:
+                      type:
+                      - string
+                      - 'null'
+                    id3FileProcessing:
+                      type: boolean
+                    id3FileSize:
+                      type: integer
+                    parentId:
+                      type:
+                      - string
+                      - 'null'
+                    guid:
+                      type:
+                      - string
+                      - 'null'
+                    soundcloudIdentifier:
+                      type:
+                      - string
+                      - 'null'
+                    pubdateTimezone:
+                      type:
+                      - string
+                      - 'null'
+                    originalFilename:
+                      type:
+                      - string
+                      - 'null'
+                    preOffset:
+                      type: string
+                    postOffset:
+                      type: string
+                    spotifyIdentifier:
+                      type:
+                      - string
+                      - 'null'
+                    expectedAdhash:
+                      type: string
+                    audioFileUpdatedAt:
+                      type:
+                      - string
+                      - 'null'
+                    draft:
+                      type: boolean
+                    externalId:
+                      type:
+                      - string
+                      - 'null'
+                    cleanTitle:
+                      type: string
+                    customFields:
+                      type: object
+                    podcastTitle:
+                      type: string
+                    networkId:
+                      type: string
+                    podcastAuthor:
+                      type: string
+                    podcastItunesCategories:
+                      type: array
+                      items:
+                        type: string
+                    advertisingTags:
+                      type: array
+                      items:
+                        type: string
+                    status:
+                      type: string
+                    audioFileStatus:
+                      type: string
+              example:
+              - id: bb9a6eac-a1d7-11e6-8dea-0b8d75b16e77
+                createdAt: '2016-11-03T15:11:01.884Z'
+                updatedAt: '2016-11-03T15:11:01.921Z'
+                title: '#10: News for the week of June 7, 2016'
+                pubdate: '2016-06-07T14:54:02.690Z'
+                link: www.example.com/episodelink
+                author: Bob Smith
+                imageFile: null
+                explicit: null
+                episodeType: full
+                seasonNumber: 2
+                episodeNumber: 10
+                subtitle: The episode about chipmunks
+                summary: <p>Our hosts talk about even smaller suburban mammals.</p>
+                audioFile: null
+                size: 0
+                duration: '0.0'
+                uid: TN2753200575
+                originalUrl: null
+                bitrate: null
+                samplerate: null
+                channelMode: null
+                vbr: null
+                audioFileProcessing: true
+                podcastId: 5c1dd196-a1d5-11e6-8dea-1be56d6dc7a1
+                preCount: 0
+                postCount: 0
+                insertionPoints: []
+                id3File: null
+                id3FileProcessing: true
+                id3FileSize: 0
+                parentId: null
+                guid: null
+                soundcloudIdentifier: null
+                pubdateTimezone: null
+                originalFilename: null
+                preOffset: '0.0'
+                postOffset: '0.0'
+                spotifyIdentifier: null
+                expectedAdhash: ''
+                audioFileUpdatedAt: null
+                draft: false
+                externalId: 123abc
+                cleanTitle: News for the week of June 7, 2016
+                customFields:
+                  Plain Text: Custom field sample
+                podcastTitle: Sample Podcast
+                networkId: 6d802e84-c1d7-11k6-8dpa-43f6sdfc99ba
+                podcastAuthor: John Smith
+                podcastItunesCategories:
+                - History
+                - Society & Culture
+                advertisingTags:
+                - tag1
+                - tag2
+                published: true
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              schema:
+                type: string
+              example: '60'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/search/orders:
+    get:
+      tags:
+      - Search Endpoints
+      summary: List All Orders
+      description: Returns all orders accessible by requesting user. This list contains both promo orders and campaign orders.
+      operationId: listAllOrders
+      parameters:
+      - name: organizationId
+        in: query
+        required: false
+        schema:
+          type: string
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    title: {}
+                    region:
+                      type: string
+                    scheduledAt:
+                      type: string
+                      format: date-time
+                    impressionsCap:
+                      type: integer
+                    startAt: {}
+                    endAt: {}
+                    adhash: {}
+                    priority:
+                      type: integer
+                    position:
+                      type: integer
+                    campaignId:
+                      type: string
+                      format: uuid
+                    impressionsGoal: {}
+                    revenueCents: {}
+                    revenueCurrency:
+                      type: string
+                    notes: {}
+                    flightTimezone: {}
+                    geotargets:
+                      type: array
+                      items:
+                        type: string
+                    geoexclusions:
+                      type: array
+                      items: {}
+                    geonameIdInclusions:
+                      type: array
+                      items:
+                        type: string
+                    geonameIdExclusions:
+                      type: array
+                      items: {}
+                    state:
+                      type: string
+                    audioStatus:
+                      type: string
+                    copyNeeded:
+                      type: boolean
+                    promoCode: {}
+                    vanityUrl: {}
+                    targets:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                          id:
+                            type: string
+                            format: uuid
+                    promo:
+                      type: boolean
+              example:
+              - id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                createdAt: '2016-11-07T20:15:30.465Z'
+                updatedAt: '2016-11-07T20:15:30.465Z'
+                title: null
+                region: all
+                scheduledAt: '2016-11-07T20:15:30.466Z'
+                impressionsCap: 0
+                startAt: null
+                endAt: null
+                adhash: null
+                priority: 1
+                position: 1
+                campaignId: 4ba157f0-a506-11e6-9164-437b083548dd
+                impressionsGoal: null
+                revenueCents: null
+                revenueCurrency: USD
+                notes: null
+                flightTimezone: null
+                geotargets:
+                - US
+                geoexclusions: []
+                geonameIdInclusions:
+                - '6252001'
+                geonameIdExclusions: []
+                state: enabled
+                audioStatus: needs_audio
+                copyNeeded: true
+                promoCode: null
+                vanityUrl: null
+                targets:
+                - type: episode
+                  id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                promo: false
+              - id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                createdAt: '2016-11-07T20:15:30.465Z'
+                updatedAt: '2016-11-07T20:15:30.465Z'
+                title: null
+                region: all
+                scheduledAt: '2016-11-07T20:15:30.466Z'
+                impressionsCap: 0
+                organizationId: 731851fc-9fad-11e6-a338-072240a555ac
+                startAt: null
+                endAt: null
+                adhash: null
+                priority: 1
+                position: 1
+                impressionsGoal: null
+                revenueCents: null
+                revenueCurrency: USD
+                notes: null
+                flightTimezone: null
+                geotargets:
+                - US
+                geonameIdInclusions:
+                - '6252001'
+                state: enabled
+                audioStatus: needs_audio
+                copyNeeded: true
+                promoCode: null
+                vanityUrl: null
+                targets:
+                - type: episode
+                  id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                promo: true
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

@@ -1,0 +1,236 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Advertiser Categories API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Advertiser Categories
+  description: 'Megaphone provides an endpoint for listing Advertiser Categories for Advertiser/Podcast
+
+    association.'
+paths:
+  /api/targeting/categories:
+    get:
+      tags:
+      - Advertiser Categories
+      summary: List All Advertiser Categories
+      description: 'Lists all Advertiser Categories that can be associated with an Advertiser
+
+        and excluded from a Podcast in Megaphone.'
+      operationId: listAllAdvertiserCategories
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                        children:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              value:
+                                type: string
+                              label:
+                                type: string
+              example:
+                items:
+                - value: ADV-6
+                  label: Video Gaming
+                  children:
+                  - value: ADV-6-64
+                    label: Console Games
+                  - value: ADV-6-65
+                    label: Mobile Games
+                - value: ADV-1
+                  label: Automotive
+                  children:
+                  - value: ADV-1-1
+                    label: Auto Rental
+                  - value: ADV-1-2
+                    label: Auto Towing and Repair
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

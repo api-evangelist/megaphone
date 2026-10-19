@@ -1,0 +1,447 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Targeting API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Targeting
+  description: '# Targeting
+
+
+    Megaphone provides a top-level endpoint for order targeting objects, including Device Targets, IAB Advertiser Categories, MTM Categories, Nielsen Segments, and Geotargeting (Countries, Regions, and US DMAs) in our database.'
+paths:
+  /api/targeting/devices:
+    get:
+      tags:
+      - Targeting
+      summary: List All Devices
+      description: List all devices that can be targeted in an order in Megaphone.
+      operationId: listAllDevices
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                        value:
+                          type: string
+              example:
+                items:
+                - label: iOS
+                  value: iOS
+                - label: Android
+                  value: Android
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/targeting/nielsen_segments:
+    get:
+      tags:
+      - Targeting
+      summary: List All Nielsen Segments
+      description: List all Nielsen segments that can be targeted in an order in Megaphone.
+      operationId: listAllNielsenSegments
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+              example:
+                items:
+                - value: '1234'
+                  label: Pet Owners - Dog Owners
+                - value: '5678'
+                  label: Pet Owners - Cat Owners
+                - value: '9876'
+                  label: Pet Owners - Rabbit Owners
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/targeting/geo/countries:
+    get:
+      tags:
+      - Targeting
+      summary: List All Countries
+      description: List all countries that can be targeted in an order in Megaphone.
+      operationId: listAllCountries
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                        geoname_id:
+                          type: string
+              example:
+                items:
+                - value: AF
+                  label: Afghanistan
+                  geoname_id: '1149361'
+                - value: AL
+                  label: Albania
+                  geoname_id: '783754'
+                - value: DZ
+                  label: Algeria
+                  geoname_id: '2589581'
+                - value: AS
+                  label: American Samoa
+                  geoname_id: '5880801'
+                - value: AD
+                  label: Andorra
+                  geoname_id: '3041565'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/targeting/geo/regions:
+    get:
+      tags:
+      - Targeting
+      summary: List All Regions
+      description: List all regions that can be targeted in an order in Megaphone.
+      operationId: listAllRegions
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                        geoname_id:
+                          type: string
+              example:
+                items:
+                - value: AF-KAB
+                  label: Afghanistan, Kabul
+                  geoname_id: '1138957'
+                - value: AL-04
+                  label: Albania, Qarku i Fierit
+                  geoname_id: '3185674'
+                - value: AL-10
+                  label: Albania, Qarku i Shkodres
+                  geoname_id: '781913'
+                - value: AL-11
+                  label: Albania, Tirana
+                  geoname_id: '3183879'
+                - value: DZ-16
+                  label: Algeria, Algiers
+                  geoname_id: '2507475'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/targeting/geo/dmas:
+    get:
+      tags:
+      - Targeting
+      summary: List All US DMAs
+      description: List all US DMAs that can be targeted in an order in Megaphone.
+      operationId: listAllUsDmas
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+              example:
+                items:
+                - value: '662'
+                  label: Abilene-Sweetwater
+                - value: '525'
+                  label: Albany Ga
+                - value: '532'
+                  label: Albany-Schenectady-Troy
+                - value: '790'
+                  label: Albuquerque-Santa Fe
+                - value: '644'
+                  label: Alexandria La
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/targeting/geo/cities:
+    get:
+      tags:
+      - Targeting
+      summary: List All Cities
+      description: List all Cities that can be targeted in an order in Megaphone.
+      operationId: listAllCities
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                        geoname_id:
+                          type: string
+              example:
+                items:
+                - value: AF-BAL/Mazari Sharif
+                  label: Afghanistan, Balkh, Mazari Sharif
+                  geoname_id: '1133616'
+                - value: AF-HER/Ab Jalil
+                  label: Afghanistan, Herat, Ab Jalil
+                  geoname_id: '1149522'
+                - value: AF-HER/Herat
+                  label: Afghanistan, Herat, Herat
+                  geoname_id: '1140026'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

@@ -1,0 +1,2152 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Promo API v2 API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Promo API v2
+  description: '**⚠️ AVAILABILITY ⚠️**
+
+
+    The Promo API v2 provides endpoints for managing promos, promo advertisements, and promo assets.
+
+
+    - **Base URL:**`https://cms.megaphone.fm/api/v2`
+
+
+    - **Available From:** May 15, 2026 00:00:00 UTC
+
+
+    #### Migration Timeline
+
+
+    - **Before May 15, 2026:** v2 promo endpoints not yet available; use legacy endpoints.
+
+
+    - **May 15 - July 14, 2026:** Legacy endpoints and v2 promo endpoints work during the migration period.
+
+
+    - **After July 14, 2026 11:59:59 UTC:** Legacy promo endpoints are removed.
+
+
+    #### Key Differences from Orders API v2
+
+
+    - `promotedPodcastId` is a promo-level field and must be a Megaphone podcast UUID from the requested organization when provided.
+
+
+    - Promo content targeting accepts Megaphone UUIDs under `shows` and `episodes`.
+
+
+    - `includeAudienceTargets` & `topics` are not supported for promos.
+
+
+    - Order-specific fields such as `impressionsCap`, `pacingType`, `cpmRate`, `adHash`, `copy`, and `dcmLineItemId` do not exist on promos.
+
+
+    - DELETE is not supported. Archive a Promo, Promo Advertisement, or Promo Asset with `PATCH` and `status: "archived"`.'
+paths:
+  /api/v2/organizations/{organization_id}/promos:
+    get:
+      tags:
+      - Promo API v2
+      summary: List All Promos
+      description: List all promos for an organization.
+      operationId: listAllPromos
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    promotedPodcastId:
+                      type: string
+                      format: uuid
+                    assetFormat:
+                      type: string
+                    state:
+                      type: string
+                    schedule:
+                      type: object
+                      properties:
+                        startAt:
+                          type: string
+                          format: date-time
+                        endAt:
+                          type: string
+                          format: date-time
+                        timezone:
+                          type: string
+                    includeContentTargets:
+                      type: object
+                      properties:
+                        shows:
+                          type: array
+                          items:
+                            type: string
+                    excludeContentTargets:
+                      type: object
+                      properties:
+                        episodes:
+                          type: array
+                          items:
+                            type: string
+                    includeGeotargets:
+                      type: object
+                      properties:
+                        regionIds:
+                          type: array
+                          items:
+                            type: string
+                        cityIds:
+                          type: array
+                          items:
+                            type: string
+                    excludeGeotargets:
+                      type: object
+                      properties:
+                        dmaIds:
+                          type: array
+                          items:
+                            type: string
+                        postalCodeIds:
+                          type: array
+                          items:
+                            type: string
+                    includeDeviceTargets:
+                      type: array
+                      items:
+                        type: string
+                    frequencyCaps:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          frequencyUnit:
+                            type: string
+                          frequencyPeriod:
+                            type: integer
+                          maxImpressions:
+                            type: integer
+                    status:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    createdBy:
+                      type: string
+                    updatedBy:
+                      type: string
+              example:
+              - id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: True Crime Weekly Cross-Promo
+                promotedPodcastId: 0f64b2de-a4b4-4f63-8d5d-7d7c4bb2a111
+                assetFormat: audio
+                state: 'on'
+                schedule:
+                  startAt: '2026-08-15T00:00:00'
+                  endAt: '2026-09-15T23:59:59'
+                  timezone: America/New_York
+                includeContentTargets:
+                  shows:
+                  - podcast-uuid-1
+                excludeContentTargets:
+                  episodes:
+                  - episode-uuid-1
+                includeGeotargets:
+                  regionIds:
+                  - '5128581'
+                  cityIds:
+                  - '4930956'
+                excludeGeotargets:
+                  dmaIds:
+                  - '501'
+                  postalCodeIds:
+                  - US:10001
+                includeDeviceTargets:
+                - ios
+                - android
+                frequencyCaps:
+                - frequencyUnit: day
+                  frequencyPeriod: 1
+                  maxImpressions: 5
+                status: active
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-abc
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Promo API v2
+      summary: Create a Promo
+      description: Create a promo under an organization.
+      operationId: createAPromo
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                promotedPodcastId:
+                  type: string
+                  format: uuid
+                assetFormat:
+                  type: string
+                state:
+                  type: string
+                schedule:
+                  type: object
+                  properties:
+                    startAt:
+                      type: string
+                      format: date-time
+                    endAt:
+                      type: string
+                      format: date-time
+                    timezone:
+                      type: string
+                includeContentTargets:
+                  type: object
+                  properties:
+                    shows:
+                      type: array
+                      items:
+                        type: string
+                excludeContentTargets:
+                  type: object
+                  properties:
+                    episodes:
+                      type: array
+                      items:
+                        type: string
+                includeGeotargets:
+                  type: object
+                  properties:
+                    regionIds:
+                      type: array
+                      items:
+                        type: string
+                    cityIds:
+                      type: array
+                      items:
+                        type: string
+                excludeGeotargets:
+                  type: object
+                  properties:
+                    dmaIds:
+                      type: array
+                      items:
+                        type: string
+                    postalCodeIds:
+                      type: array
+                      items:
+                        type: string
+                includeDeviceTargets:
+                  type: array
+                  items:
+                    type: string
+                frequencyCaps:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      frequencyUnit:
+                        type: string
+                      frequencyPeriod:
+                        type: integer
+                      maxImpressions:
+                        type: integer
+            example:
+              name: True Crime Weekly Cross-Promo
+              promotedPodcastId: 0f64b2de-a4b4-4f63-8d5d-7d7c4bb2a111
+              assetFormat: audio
+              state: 'on'
+              schedule:
+                startAt: '2026-08-15T00:00:00'
+                endAt: '2026-09-15T23:59:59'
+                timezone: America/New_York
+              includeContentTargets:
+                shows:
+                - podcast-uuid-1
+              excludeContentTargets:
+                episodes:
+                - episode-uuid-1
+              includeGeotargets:
+                regionIds:
+                - '5128581'
+                cityIds:
+                - '4930956'
+              excludeGeotargets:
+                dmaIds:
+                - '501'
+                postalCodeIds:
+                - US:10001
+              includeDeviceTargets:
+              - ios
+              - android
+              frequencyCaps:
+              - frequencyUnit: day
+                frequencyPeriod: 1
+                maxImpressions: 5
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  promotedPodcastId:
+                    type: string
+                    format: uuid
+                  assetFormat:
+                    type: string
+                  state:
+                    type: string
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                      timezone:
+                        type: string
+                  includeContentTargets:
+                    type: object
+                    properties:
+                      shows:
+                        type: array
+                        items:
+                          type: string
+                  excludeContentTargets:
+                    type: object
+                    properties:
+                      episodes:
+                        type: array
+                        items:
+                          type: string
+                  includeGeotargets:
+                    type: object
+                    properties:
+                      regionIds:
+                        type: array
+                        items:
+                          type: string
+                      cityIds:
+                        type: array
+                        items:
+                          type: string
+                  excludeGeotargets:
+                    type: object
+                    properties:
+                      dmaIds:
+                        type: array
+                        items:
+                          type: string
+                      postalCodeIds:
+                        type: array
+                        items:
+                          type: string
+                  includeDeviceTargets:
+                    type: array
+                    items:
+                      type: string
+                  frequencyCaps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        frequencyUnit:
+                          type: string
+                        frequencyPeriod:
+                          type: integer
+                        maxImpressions:
+                          type: integer
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  createdBy:
+                    type: string
+                  updatedBy:
+                    type: string
+              example:
+                id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: True Crime Weekly Cross-Promo
+                promotedPodcastId: 0f64b2de-a4b4-4f63-8d5d-7d7c4bb2a111
+                assetFormat: audio
+                state: 'on'
+                schedule:
+                  startAt: '2026-08-15T00:00:00'
+                  endAt: '2026-09-15T23:59:59'
+                  timezone: America/New_York
+                includeContentTargets:
+                  shows:
+                  - podcast-uuid-1
+                excludeContentTargets:
+                  episodes:
+                  - episode-uuid-1
+                includeGeotargets:
+                  regionIds:
+                  - '5128581'
+                  cityIds:
+                  - '4930956'
+                excludeGeotargets:
+                  dmaIds:
+                  - '501'
+                  postalCodeIds:
+                  - US:10001
+                includeDeviceTargets:
+                - ios
+                - android
+                frequencyCaps:
+                - frequencyUnit: day
+                  frequencyPeriod: 1
+                  maxImpressions: 5
+                status: scheduled
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-abc
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/promos/{promo_id}:
+    get:
+      tags:
+      - Promo API v2
+      summary: Get a Promo
+      description: Get a promo.
+      operationId: getAPromo
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  promotedPodcastId:
+                    type: string
+                    format: uuid
+                  assetFormat:
+                    type: string
+                  state:
+                    type: string
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                      timezone:
+                        type: string
+                  includeContentTargets:
+                    type: object
+                    properties:
+                      shows:
+                        type: array
+                        items:
+                          type: string
+                  excludeContentTargets:
+                    type: object
+                    properties:
+                      episodes:
+                        type: array
+                        items:
+                          type: string
+                  includeGeotargets:
+                    type: object
+                    properties:
+                      regionIds:
+                        type: array
+                        items:
+                          type: string
+                      cityIds:
+                        type: array
+                        items:
+                          type: string
+                  excludeGeotargets:
+                    type: object
+                    properties:
+                      dmaIds:
+                        type: array
+                        items:
+                          type: string
+                      postalCodeIds:
+                        type: array
+                        items:
+                          type: string
+                  includeDeviceTargets:
+                    type: array
+                    items:
+                      type: string
+                  frequencyCaps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        frequencyUnit:
+                          type: string
+                        frequencyPeriod:
+                          type: integer
+                        maxImpressions:
+                          type: integer
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  createdBy:
+                    type: string
+                  updatedBy:
+                    type: string
+              example:
+                id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: True Crime Weekly Cross-Promo
+                promotedPodcastId: 0f64b2de-a4b4-4f63-8d5d-7d7c4bb2a111
+                assetFormat: audio
+                state: 'on'
+                schedule:
+                  startAt: '2026-08-15T00:00:00'
+                  endAt: '2026-09-15T23:59:59'
+                  timezone: America/New_York
+                includeContentTargets:
+                  shows:
+                  - podcast-uuid-1
+                excludeContentTargets:
+                  episodes:
+                  - episode-uuid-1
+                includeGeotargets:
+                  regionIds:
+                  - '5128581'
+                  cityIds:
+                  - '4930956'
+                excludeGeotargets:
+                  dmaIds:
+                  - '501'
+                  postalCodeIds:
+                  - US:10001
+                includeDeviceTargets:
+                - ios
+                - android
+                frequencyCaps:
+                - frequencyUnit: day
+                  frequencyPeriod: 1
+                  maxImpressions: 5
+                status: active
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-abc
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Promo API v2
+      summary: Update a Promo
+      description: 'Update a promo. `PUT` is also routed to this update action. To archive a promo, send `status: "archived"`.'
+      operationId: updateAPromo
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                state:
+                  type: string
+                schedule:
+                  type: object
+                  properties:
+                    startAt:
+                      type: string
+                      format: date-time
+                    endAt:
+                      type: string
+                      format: date-time
+                    timezone:
+                      type: string
+                includeContentTargets:
+                  type: object
+                  properties:
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                excludeContentTargets:
+                  type: object
+                  properties:
+                    episodes:
+                      type: array
+                      items:
+                        type: string
+                includeGeotargets:
+                  type: object
+                  properties:
+                    countryCode:
+                      type: string
+                    regionIds:
+                      type: array
+                      items:
+                        type: string
+                excludeGeotargets:
+                  type: object
+                  properties:
+                    cityIds:
+                      type: array
+                      items:
+                        type: string
+                includeDeviceTargets:
+                  type: array
+                  items:
+                    type: string
+                frequencyCaps:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      frequencyUnit:
+                        type: string
+                      frequencyPeriod:
+                        type: integer
+                      maxImpressions:
+                        type: integer
+            example:
+              name: True Crime Weekly Cross-Promo - Updated
+              state: 'off'
+              schedule:
+                startAt: '2026-08-15T00:00:00'
+                endAt: '2026-10-15T23:59:59'
+                timezone: America/New_York
+              includeContentTargets:
+                tags:
+                - tag-uuid-1
+                - tag-uuid-3
+              excludeContentTargets:
+                episodes:
+                - episode-uuid-1
+                - episode-uuid-2
+              includeGeotargets:
+                countryCode: US
+                regionIds:
+                - '5128581'
+                - '5332921'
+              excludeGeotargets:
+                cityIds:
+                - '4930956'
+              includeDeviceTargets:
+              - ios
+              frequencyCaps:
+              - frequencyUnit: week
+                frequencyPeriod: 1
+                maxImpressions: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  promotedPodcastId:
+                    type: string
+                    format: uuid
+                  assetFormat:
+                    type: string
+                  state:
+                    type: string
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                      timezone:
+                        type: string
+                  includeContentTargets:
+                    type: object
+                    properties:
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                  excludeContentTargets:
+                    type: object
+                    properties:
+                      episodes:
+                        type: array
+                        items:
+                          type: string
+                  includeGeotargets:
+                    type: object
+                    properties:
+                      countryCode:
+                        type: string
+                      regionIds:
+                        type: array
+                        items:
+                          type: string
+                  excludeGeotargets:
+                    type: object
+                    properties:
+                      cityIds:
+                        type: array
+                        items:
+                          type: string
+                  includeDeviceTargets:
+                    type: array
+                    items:
+                      type: string
+                  frequencyCaps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        frequencyUnit:
+                          type: string
+                        frequencyPeriod:
+                          type: integer
+                        maxImpressions:
+                          type: integer
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  createdBy:
+                    type: string
+                  updatedBy:
+                    type: string
+              example:
+                id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: True Crime Weekly Cross-Promo - Updated
+                promotedPodcastId: 0f64b2de-a4b4-4f63-8d5d-7d7c4bb2a111
+                assetFormat: audio
+                state: 'off'
+                schedule:
+                  startAt: '2026-08-15T00:00:00'
+                  endAt: '2026-10-15T23:59:59'
+                  timezone: America/New_York
+                includeContentTargets:
+                  tags:
+                  - tag-uuid-1
+                  - tag-uuid-3
+                excludeContentTargets:
+                  episodes:
+                  - episode-uuid-1
+                  - episode-uuid-2
+                includeGeotargets:
+                  countryCode: US
+                  regionIds:
+                  - '5128581'
+                  - '5332921'
+                excludeGeotargets:
+                  cityIds:
+                  - '4930956'
+                includeDeviceTargets:
+                - ios
+                frequencyCaps:
+                - frequencyUnit: week
+                  frequencyPeriod: 1
+                  maxImpressions: 3
+                status: active
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-02-10T14:20:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-def
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/promos/assets:
+    get:
+      tags:
+      - Promo API v2
+      summary: List All Promo Assets
+      description: List promo assets for an organization.
+      operationId: listAllPromoAssets
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    assetType:
+                      type: string
+                    status:
+                      type: string
+                    url:
+                      type: string
+                      format: uri
+                    fileType:
+                      type: string
+                    thumbnailUrl: {}
+                    height: {}
+                    width: {}
+                    durationMs:
+                      type: integer
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+              example:
+              - id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Cross-Promo Audio Clip
+                assetType: audio
+                status: ready
+                url: https://storage.googleapis.com/assets/audio/cross-promo-clip.mp3
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: 30000
+                createdAt: '2026-01-15T10:30:00Z'
+                updatedAt: '2026-01-15T10:30:00Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Promo API v2
+      summary: Create a Promo Asset
+      description: Create a promo asset shell before uploading media.
+      operationId: createAPromoAsset
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assetType:
+                  type: string
+                name:
+                  type: string
+            example:
+              assetType: audio
+              name: Cross-Promo Audio Clip
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url: {}
+                  fileType: {}
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs: {}
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Cross-Promo Audio Clip
+                assetType: audio
+                status: waiting_upload
+                url: null
+                fileType: null
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: null
+                createdAt: '2026-01-15T10:30:00Z'
+                updatedAt: '2026-01-15T10:30:00Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/promos/assets/{asset_id}:
+    get:
+      tags:
+      - Promo API v2
+      summary: Get a Promo Asset
+      description: Get promo asset metadata.
+      operationId: getAPromoAsset
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  fileType:
+                    type: string
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Cross-Promo Audio Clip
+                assetType: audio
+                status: ready
+                url: https://storage.googleapis.com/assets/audio/cross-promo-clip.mp3
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: 30000
+                createdAt: '2026-01-15T10:30:00Z'
+                updatedAt: '2026-01-15T10:30:00Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Promo API v2
+      summary: Update a Promo Asset
+      description: 'Update promo asset metadata. To archive a promo asset, send `status: "archived"`.'
+      operationId: updateAPromoAsset
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                status:
+                  type: string
+            example:
+              name: Updated Cross-Promo Audio Clip
+              status: archived
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  fileType:
+                    type: string
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Updated Cross-Promo Audio Clip
+                assetType: audio
+                status: archived
+                url: https://storage.googleapis.com/assets/audio/cross-promo-clip.mp3
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: 30000
+                createdAt: '2026-01-15T10:30:00Z'
+                updatedAt: '2026-02-10T14:20:00Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/promos/assets/{asset_id}/start-chunked-upload:
+    post:
+      tags:
+      - Promo API v2
+      summary: Start Chunked Upload
+      description: Start a chunked upload session. Returns an upload session ID to use in transfer and complete requests, along with the maximum file chunk size in megabytes.
+      operationId: startChunkedUploadPromoApiV2
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadSessionId:
+                    type: string
+                  maxChunkSizeMb:
+                    type: integer
+              example:
+                uploadSessionId: upload-session-abc123
+                maxChunkSizeMb: 20
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/promos/assets/{asset_id}/transfer-chunked-upload:
+    post:
+      tags:
+      - Promo API v2
+      summary: Transfer Chunked Upload
+      description: Transfer one section of binary media data.
+      operationId: transferChunkedUploadPromoApiV2
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                media:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+              example:
+                success: true
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/promos/assets/{asset_id}/complete-chunked-upload:
+    post:
+      tags:
+      - Promo API v2
+      summary: Complete Chunked Upload
+      description: Complete the chunked upload session.
+      operationId: completeChunkedUploadPromoApiV2
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uploadSessionId:
+                  type: string
+                numberOfSections:
+                  type: integer
+                assetType:
+                  type: string
+            example:
+              uploadSessionId: upload-session-abc123
+              numberOfSections: 5
+              assetType: audio
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url: {}
+                  fileType:
+                    type: string
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs: {}
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Cross-Promo Audio Clip
+                assetType: audio
+                status: processing
+                url: null
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: null
+                createdAt: '2026-01-15T10:30:00Z'
+                updatedAt: '2026-01-15T10:35:00Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/promos/{promo_id}/advertisements:
+    get:
+      tags:
+      - Promo API v2
+      summary: List All Promo Advertisements
+      description: List advertisements for a promo.
+      operationId: listAllPromoAdvertisements
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    promotionId:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    assetId:
+                      type: string
+                      format: uuid
+                    location:
+                      type: string
+                    adBreak: {}
+                    state:
+                      type: string
+                    trackingUrl:
+                      type: string
+                      format: uri
+                    clickableAd:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        tagline:
+                          type: string
+                        clickthroughUrl:
+                          type: string
+                          format: uri
+                        key:
+                          type: array
+                          items:
+                            type: string
+                    status:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    createdBy:
+                      type: string
+                    updatedBy:
+                      type: string
+              example:
+              - id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                promotionId: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Preroll Cross-Promo Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: preroll
+                adBreak: null
+                state: 'on'
+                trackingUrl: https://trackingurl1.com
+                clickableAd:
+                  title: True Crime Weekly
+                  tagline: New episodes every Monday
+                  clickthroughUrl: https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk
+                  key:
+                  - LISTEN_NOW
+                status: approved
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-abc
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Promo API v2
+      summary: Create a Promo Advertisement
+      description: Create an advertisement under a promo.
+      operationId: createAPromoAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                state:
+                  type: string
+                location:
+                  type: string
+                assetId:
+                  type: string
+                  format: uuid
+                trackingUrl:
+                  type: string
+                  format: uri
+                clickableAd:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    tagline:
+                      type: string
+                    clickthroughUrl:
+                      type: string
+                      format: uri
+                    key:
+                      type: array
+                      items:
+                        type: string
+            example:
+              name: Preroll Cross-Promo Ad
+              state: 'on'
+              location: preroll
+              assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+              trackingUrl: https://trackingurl1.com
+              clickableAd:
+                title: True Crime Weekly
+                tagline: New episodes every Monday
+                clickthroughUrl: https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk
+                key:
+                - LISTEN_NOW
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  promotionId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetId:
+                    type: string
+                    format: uuid
+                  location:
+                    type: string
+                  adBreak: {}
+                  state:
+                    type: string
+                  trackingUrl:
+                    type: string
+                    format: uri
+                  clickableAd:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      tagline:
+                        type: string
+                      clickthroughUrl:
+                        type: string
+                        format: uri
+                      key:
+                        type: array
+                        items:
+                          type: string
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  createdBy:
+                    type: string
+                  updatedBy:
+                    type: string
+              example:
+                id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                promotionId: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Preroll Cross-Promo Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: preroll
+                adBreak: null
+                state: 'on'
+                trackingUrl: https://trackingurl1.com
+                clickableAd:
+                  title: True Crime Weekly
+                  tagline: New episodes every Monday
+                  clickthroughUrl: https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk
+                  key:
+                  - LISTEN_NOW
+                status: pending
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-abc
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/promos/{promo_id}/advertisements/{advertisement_id}:
+    get:
+      tags:
+      - Promo API v2
+      summary: Get a Promo Advertisement
+      description: Get a promo advertisement.
+      operationId: getAPromoAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      - name: advertisement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of a UUID
+        example: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  promotionId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetId:
+                    type: string
+                    format: uuid
+                  location:
+                    type: string
+                  adBreak: {}
+                  state:
+                    type: string
+                  trackingUrl:
+                    type: string
+                    format: uri
+                  clickableAd:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      tagline:
+                        type: string
+                      clickthroughUrl:
+                        type: string
+                        format: uri
+                      key:
+                        type: array
+                        items:
+                          type: string
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  createdBy:
+                    type: string
+                  updatedBy:
+                    type: string
+              example:
+                id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                promotionId: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Preroll Cross-Promo Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: preroll
+                adBreak: null
+                state: 'on'
+                trackingUrl: https://trackingurl1.com
+                clickableAd:
+                  title: True Crime Weekly
+                  tagline: New episodes every Monday
+                  clickthroughUrl: https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk
+                  key:
+                  - LISTEN_NOW
+                status: approved
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-abc
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Promo API v2
+      summary: Update a Promo Advertisement
+      description: 'Update a promo advertisement. To archive an advertisement, send `status: "archived"`.'
+      operationId: updateAPromoAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      - name: advertisement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of a UUID
+        example: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                state:
+                  type: string
+                location:
+                  type: string
+                adBreak:
+                  type: integer
+                clickableAd:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    tagline:
+                      type: string
+                    clickthroughUrl:
+                      type: string
+                      format: uri
+                    key:
+                      type: array
+                      items:
+                        type: string
+            example:
+              name: Updated Preroll Cross-Promo Ad
+              state: 'off'
+              location: midroll
+              adBreak: 2
+              clickableAd:
+                title: True Crime Weekly
+                tagline: Updated tagline
+                clickthroughUrl: https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk
+                key:
+                - MORE_INFO
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  promotionId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetId:
+                    type: string
+                    format: uuid
+                  location:
+                    type: string
+                  adBreak:
+                    type: integer
+                  state:
+                    type: string
+                  trackingUrl:
+                    type: string
+                    format: uri
+                  clickableAd:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      tagline:
+                        type: string
+                      clickthroughUrl:
+                        type: string
+                        format: uri
+                      key:
+                        type: array
+                        items:
+                          type: string
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  createdBy:
+                    type: string
+                  updatedBy:
+                    type: string
+              example:
+                id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                promotionId: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Updated Preroll Cross-Promo Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: midroll
+                adBreak: 2
+                state: 'off'
+                trackingUrl: https://trackingurl1.com
+                clickableAd:
+                  title: True Crime Weekly
+                  tagline: Updated tagline
+                  clickthroughUrl: https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk
+                  key:
+                  - MORE_INFO
+                status: approved
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-02-10T14:20:00.000Z'
+                createdBy: user-uuid-abc
+                updatedBy: user-uuid-def
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '422':
+      description: Validation failed. The request body contains invalid or missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  title:
+                  - can't be blank
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

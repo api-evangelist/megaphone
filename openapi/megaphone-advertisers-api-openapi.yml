@@ -1,0 +1,580 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Advertisers API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Advertisers
+  description: '**⚠️ BREAKING CHANGE NOTICE ⚠️**
+
+
+    These legacy endpoints will continue to work until **July 14, 2026 11:59:59 UTC**.
+
+    v2 endpoints become available on **April 15, 2026**.
+
+    Please migrate to the v2 Advertisers API before the sunset date.'
+paths:
+  /api/organizations/{organization_id}/advertisers:
+    get:
+      tags:
+      - Advertisers
+      summary: Show All Advertisers
+      description: List all advertisers for an organization.
+      operationId: showAllAdvertisers
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    agencyId:
+                      type: string
+                    name:
+                      type: string
+                    displayName:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    competitiveCategories:
+                      type: string
+                    currency:
+                      type: string
+              example:
+              - id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912-db00-11e9-af1e-570ac48ae80a
+                name: Starbucks
+                displayName: Starbucks
+                createdAt: '2019-09-19T13:11:33.016-04:00'
+                updatedAt: '2019-09-19T13:11:33.016-04:00'
+                competitiveCategories: 0077,0355,0073
+                currency: USD
+              - id: 8631a26e-fb8a-11eb-9094-abd937975bd2
+                agencyId: 346eb926-fb8a-11eb-9094-5f6f665b921b
+                name: Pancakes Advertiser - ABC123
+                displayName: Pancakes Advertiser
+                createdAt: '2021-08-12T16:29:54.015Z'
+                updatedAt: '2021-08-12T16:29:54.015Z'
+                competitiveCategories: DEV3-1,DEV3-2
+                currency: EUR
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Advertisers
+      summary: Create an Advertiser
+      description: Create a new advertiser by passing in required fields of information into the request body.
+      operationId: createAnAdvertiser
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                displayName:
+                  type: string
+                agencyId:
+                  type: string
+                categories:
+                  type: array
+                  items:
+                    type: string
+                currency:
+                  type: string
+            example:
+              name: Target
+              displayName: Target
+              agencyId: 9uew912db0011e9af1e570ac48ae80a
+              categories:
+              - ADV-34-276
+              - ADV-34-279
+              currency: USD
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  agencyId:
+                    type: string
+                  name:
+                    type: string
+                  displayName:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  competitiveCategories:
+                    type: string
+                  currency:
+                    type: string
+              example:
+                id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912db0011e9af1e570ac48ae80a
+                name: Target
+                displayName: Target
+                createdAt: '2019-09-19T13:11:33.016-04:00'
+                updatedAt: '2019-09-19T13:11:33.016-04:00'
+                competitiveCategories: ADV-34-276,ADV-34-279
+                currency: USD
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/organizations/{organization_id}/advertisers/{advertiser_id}:
+    get:
+      tags:
+      - Advertisers
+      summary: Show an Advertiser
+      description: List metadata for a single advertiser in an organization.
+      operationId: showAnAdvertiser
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 8d3f0828-a6ab-11e6-b1f6-7f1cbe882371
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  agencyId:
+                    type: string
+                  name:
+                    type: string
+                  displayName:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  competitiveCategories:
+                    type: string
+                  currency:
+                    type: string
+              example:
+                id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912db0011e9af1e570ac48ae80a
+                name: Target
+                displayName: Target
+                createdAt: '2019-09-19T13:11:33.016-04:00'
+                updatedAt: '2019-09-19T13:11:33.016-04:00'
+                competitiveCategories: ADV-34-276,ADV-34-279
+                currency: USD
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      tags:
+      - Advertisers
+      summary: Update an Advertiser
+      description: Update an existing advertiser by sending the attributes you wish to update in the request body.
+      operationId: updateAnAdvertiser
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 8d3f0828-a6ab-11e6-b1f6-7f1cbe882371
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                displayName:
+                  type: string
+                categories:
+                  type: array
+                  items:
+                    type: string
+            example:
+              name: Trader Joes
+              displayName: TJs
+              categories:
+              - ADV-34-276
+              - ADV-34-279
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  agencyId:
+                    type: string
+                  name:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  competitiveCategories:
+                    type: string
+              example:
+                id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912db0011e9af1e570ac48ae80a
+                name: Trader Joes
+                createdAt: '2019-09-19T13:11:33.016-04:00'
+                updatedAt: '2019-09-19T13:11:33.016-04:00'
+                competitiveCategories: ADV-34-276,ADV-34-279
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: display_name cannot be changed once set.
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+      - Advertisers
+      summary: Delete an Advertiser
+      description: Remove an advertiser from the Megaphone platform.
+      operationId: deleteAnAdvertiser
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 8d3f0828-a6ab-11e6-b1f6-7f1cbe882371
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+              example:
+                success: Advertiser with id 7yw935ih-a6ab-11e6-b1f6-7f1cbe882371 successfully destroyed
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '422':
+      description: Validation failed. The request body contains invalid or missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  title:
+                  - can't be blank
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

@@ -77,23 +77,6 @@ apis:
   - type: Documentation
     url: >-
       https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
-- aid: megaphone:megaphone-direct-sales-v2-api
-  name: Megaphone Direct Sales v2 API
-  description: v2 advertisers, campaigns, orders, assets, advertisements, and targeting (modeled).
-  humanURL: https://developers.megaphone.fm/
-  baseURL: https://cms.megaphone.fm/api
-  tags:
-  - Direct Sales v2
-  properties:
-  - type: OpenAPI
-    url: openapi/megaphone-direct-sales-v2-api-openapi.yml
-  - type: Documentation
-    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
-  - type: APIReference
-    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
-  - type: Documentation
-    url: >-
-      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
 - aid: megaphone:megaphone-episodes-api
   name: Megaphone Episodes API
   description: Episodes within a podcast, including dynamic ad insertion.
@@ -104,25 +87,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/megaphone-episodes-api-openapi.yml
-  - type: Documentation
-    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
-  - type: APIReference
-    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
-  - type: Documentation
-    url: >-
-      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
-- aid: megaphone:megaphone-exports-api
-  name: Megaphone Exports API
-  description: Metrics Export Service and Impressions Export Service (modeled).
-  humanURL: https://developers.megaphone.fm/
-  baseURL: https://cms.megaphone.fm/api
-  tags:
-  - Export
-  tags_raw:
-  - Exports
-  properties:
-  - type: OpenAPI
-    url: openapi/megaphone-exports-api-openapi.yml
   - type: Documentation
     url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
   - type: APIReference
@@ -147,25 +111,6 @@ apis:
   - type: Documentation
     url: >-
       https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
-- aid: megaphone:megaphone-orders-api
-  name: Megaphone Orders API
-  description: Legacy Direct Sales campaign and promo orders and their advertisements.
-  humanURL: https://developers.megaphone.fm/
-  baseURL: https://cms.megaphone.fm/api
-  tags:
-  - Order
-  tags_raw:
-  - Orders
-  properties:
-  - type: OpenAPI
-    url: openapi/megaphone-orders-api-openapi.yml
-  - type: Documentation
-    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
-  - type: APIReference
-    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
-  - type: Documentation
-    url: >-
-      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
 - aid: megaphone:megaphone-podcasts-api
   name: Megaphone Podcasts API
   description: Shows within a network, including feed and monetization settings.
@@ -176,6 +121,421 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/megaphone-podcasts-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-advertisements-api
+  name: Megaphone Advertisements API
+  description: The Advertisements API from Megaphone — 4 operation(s) for advertisements.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Advertisements
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-advertisements-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-advertiser-categories-api
+  name: Megaphone Advertiser Categories API
+  description: >-
+    Megaphone provides an endpoint for listing Advertiser Categories for Advertiser/Podcast
+
+    association.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Advertiser Categories
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-advertiser-categories-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-advertisers-api
+  name: Megaphone Advertisers API
+  description: >-
+    **⚠️ BREAKING CHANGE NOTICE ⚠️**
+
+
+    These legacy endpoints will continue to work until **July 14, 2026 11:59:59 UTC**.
+
+    v2 endpoints become available on **April 15, 2026**.
+
+    Please migrate to the [v2 Advertisers API](#reference/direct-sales-api-v2/advertisers-v2-collection)
+    before the sunset date.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Advertisers
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-advertisers-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-agencies-api
+  name: Megaphone Agencies API
+  description: The Agencies API from Megaphone — 2 operation(s) for agencies.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Agencies
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-agencies-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-campaign-orders-api
+  name: Megaphone Campaign Orders API
+  description: >-
+    **⚠️ BREAKING CHANGE NOTICE ⚠️**
+
+
+    These legacy endpoints will continue to work until **July 14, 2026 11:59:59 UTC**.
+
+    v2 endpoints become available on **April 15, 2026**.
+
+    Please migrate to the [v2 Orders API](#reference/direct-sales-api-v2/orders-v2-collection) before
+    the sunset date.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Campaign Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-campaign-orders-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-cuepoints-api
+  name: Megaphone Cuepoints API
+  description: >-
+    **⚠️ IMPORTANT: Sponsorship Cuepoints ⚠️**
+
+
+    These endpoints manage **all cuepoints** on an episode, including:
+
+
+    - **Ad Cuepoints**: Standard ad break markers (preroll, midroll, postroll)
+
+
+    - **Sponsorship Cuepoints**: Locations for sponsorship content (`cuepointType: "sponsorship"`)
+
+
+    **⚠️ When using the PUT endpoint to replace cuepoints, ALL existing cuepoints are deleted and replaced
+    with the provided array. This includes Sponsorship Cuepoints. If you do not include Sponsorship Cuepoints
+    in your array, they will be permanently deleted.**
+
+
+    Deleting a Sponsorship Cuepoint removes the target from any Sponsorship using it, potentially putting
+    the Sponsorship in `inactive` status. For Embedded Sponsorships, if the cuepoint is removed, the original
+    content will play, but analytics will not be tracked.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Cuepoints
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-cuepoints-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-direct-sales-api-v2-api
+  name: Megaphone Direct Sales API v2 API
+  description: >-
+    **⚠️ AVAILABILITY ⚠️**
+
+
+    The Direct Sales API v2 provides enhanced endpoints for managing advertisers, campaigns, orders, assets,
+    and advertisements for Standard and Priority campaign types.
+
+
+    **Base URL:** `https://cms.megaphone.fm/api/v2`
+
+
+    **Available From:** April 15, 2026 10:00:00 AM EST
+
+
+    **Migration Timeline:**
+
+
+    - **Before April 15, 2026:** v2 endpoints not yet available - use legacy endpoints
+
+
+    - **April 15 - July 14, 2026:** Both legacy and v2 endpoints work - migration period
+
+
+    - **After July 14, 2026:** Legacy endpoints removed
+
+
+    **Pagination Note (v2 Direct Sales)**
+
+
+    Paginated v2 list endpoints (advertisers, campaigns, orders, advertisements, assets, and geo targeting)
+    cap `per_page` at **50** (not 500 as stated in the global section) and follow the global pagination
+    convention (see the Pagination section above) with two additional exceptions:
+
+
+    - `X-Total` is **not** returned.
+
+
+    - The `Link` header does **not** include a `last` rel.
+
+
+    `X-Page`, `X-Per-Page`, and `Link` (`first`, `next`, `previous`) are returned as documented.
+
+
+    Episode Topics and Audience Interests return all records in a single response and do not support pagination.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Direct Sales API v2
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-direct-sales-api-v2-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-iab-advertiser-categories-api
+  name: Megaphone IAB Advertiser Categories API
+  description: >-
+    Megaphone provides an endpoint for listing IAB Advertiser Categories used for Advertiser/Podcast
+
+    association.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - IAB Advertiser Categories
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-iab-advertiser-categories-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-organization-tags-api
+  name: Megaphone Organization Tags API
+  description: Megaphone provides an endpoint for listing Organization Tags.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Organization Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-organization-tags-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-promo-api-v2-api
+  name: Megaphone Promo API v2 API
+  description: >-
+    **⚠️ AVAILABILITY ⚠️**
+
+
+    The Promo API v2 provides endpoints for managing promos, promo advertisements, and promo assets.
+
+
+    - **Base URL:**`https://cms.megaphone.fm/api/v2`
+
+
+    - **Available From:** May 15, 2026 00:00:00 UTC
+
+
+    #### Migration Timeline
+
+
+    - **Before May 15, 2026:** v2 promo endpoints not yet available; use legacy endpoints.
+
+
+    - **May 15 - July 14, 2026:** Legacy endpoints and v2 promo endpoints work during the migration period.
+
+
+    - **After July 14, 2026 11:59:59 UTC:** Legacy promo endpoints are removed.
+
+
+    #### Key Differences from Orders API v2
+
+
+    - `promotedPodcastId` is a promo-level field and must be a Megaphone podcast UUID from the requested
+    organization when provided.
+
+
+    - Promo content targeting accepts Megaphone UUIDs under `shows` and `episodes`.
+
+
+    - `includeAudienceTargets` & `topics` are not supported for promos.
+
+
+    - Order-specific fields such as `impressionsCap`, `pacingType`, `cpmRate`, `adHash`, `copy`, and `dcmLineItemId`
+    do not exist on promos.
+
+
+    - DELETE is not supported. Archive a Promo, Promo Advertisement, or Promo Asset with `PATCH` and `status:
+    "archived"`.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Promo API v2
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-promo-api-v2-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-promo-orders-api
+  name: Megaphone Promo Orders API
+  description: The Promo Orders API from Megaphone — 2 operation(s) for promo orders.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Promo Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-promo-orders-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-search-endpoints-api
+  name: Megaphone Search Endpoints API
+  description: >-
+    # Search
+
+
+    Megaphone provides a top-level search endpoint for various objects in our database. By default, these
+    endpoints will return every instance of the object accessible to the requesting user. Adding query
+    params to the url will scope the response but an array will always be returned.
+
+
+    **Note:** For all search endpoints, the `filterMax` parameter may be passed with or without a time
+    value. When there is no time value or when the time value is 0 (e.g. `2022-04-15` or `2022-04-15T00:00:00.0Z`),
+    `filterMax` will be rounded up to the end of the day, such that all values from that day are included.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Search Endpoints
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-search-endpoints-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-sponsorships-api
+  name: Megaphone Sponsorships API
+  description: >-
+    **⚠️ AVAILABILITY NOTICE ⚠️**
+
+
+    These Sponsorship API endpoints will be available starting in late April.
+
+
+    The Sponsorship API provides endpoints for managing sponsorships and sponsors, and for viewing bookable
+    cuepoints for podcast episodes.
+
+
+    **Base URL:** `https://cms.megaphone.fm/api/v2`
+
+
+    ## Overview
+
+
+    **Standard Sponsorships**: Media file inserted. Can target multiple locations.
+
+
+    **Embedded Sponsorships**: Content already baked into episode audio. Created via [Create Embedded
+    Sponsorship](#embedded-sponsorships-collection-create-an-embedded-sponsorship).
+
+
+    **Ending a Sponsorship**: Set `endDate` or `status: "archived"` via Update. For embedded sponsorships,
+    this stitches content out and frees the cuepoint. Deleting the embedded cuepoint puts the sponsorship
+    in `inactive` status and the original content plays, but analytics will not be tracked.
+
+
+    **Note:** Existing Megaphone baked-in annotations will become Embedded Sponsorships without retroactive
+    analytics.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Sponsorships
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-sponsorships-api-openapi.yml
+  - type: Documentation
+    url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
+  - type: APIReference
+    url: https://jsapi.apiary.io/apis/megaphoneapi/reference/podcasts.html
+  - type: Documentation
+    url: >-
+      https://support.megaphone.fm/en/articles/9557628-order-management-systems-connected-to-megaphone
+- aid: megaphone:megaphone-targeting-api
+  name: Megaphone Targeting API
+  description: >-
+    # Targeting
+
+
+    Megaphone provides a top-level endpoint for order targeting objects, including Device Targets, IAB
+    Advertiser Categories, MTM Categories, Nielsen Segments, and Geotargeting (Countries, Regions, and
+    US DMAs) in our database.
+  humanURL: https://developers.megaphone.fm/
+  baseURL: https://cms.megaphone.fm/api
+  tags:
+  - Targeting
+  properties:
+  - type: OpenAPI
+    url: openapi/megaphone-targeting-api-openapi.yml
   - type: Documentation
     url: https://support.megaphone.fm/en/articles/2247461-megaphone-api
   - type: APIReference

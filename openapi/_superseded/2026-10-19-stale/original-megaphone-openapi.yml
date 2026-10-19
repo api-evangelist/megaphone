@@ -1,0 +1,752 @@
+openapi: 3.0.3
+info:
+  title: Megaphone API
+  description: >-
+    The Megaphone API lets podcast producers and partners manage podcasts,
+    episodes, and advertising on Megaphone by Spotify - an enterprise podcast
+    hosting, distribution, and ad-monetization platform. The v1 API (base
+    https://cms.megaphone.fm/api) covers networks, podcasts, episodes, and legacy
+    Direct Sales resources; a v2 Direct Sales API (base
+    https://cms.megaphone.fm/api/v2) manages advertisers, campaigns, orders,
+    assets, advertisements, and targeting. All requests authenticate with a
+    per-user API token sent as the header `Authorization: Token token="<TOKEN>"`,
+    generated under User Settings. List responses paginate via an RFC 5988 Link
+    header (rel="next"). The API is rate limited to 60 requests per minute
+    (1 request per second).
+
+    Documentation is public, but a token requires a paid Megaphone account. The
+    v1 network/podcast/episode/campaign/order/advertisement paths are confirmed
+    from Megaphone's docs, the Apiary reference, and the open-source
+    theatlantic/megaphone Python client. The v2 Direct Sales paths and the
+    Metrics/Impressions export paths are honestly modeled from the documented
+    resource descriptions where the exact reference was not publicly retrievable;
+    verify against developers.megaphone.fm before production use.
+  version: '2.0'
+  contact:
+    name: Megaphone by Spotify
+    url: https://developers.megaphone.fm/
+  x-support-email: support-megaphone@spotify.com
+servers:
+  - url: https://cms.megaphone.fm/api
+    description: Megaphone API v1 (networks, podcasts, episodes, legacy Direct Sales)
+  - url: https://cms.megaphone.fm/api/v2
+    description: Megaphone Direct Sales API v2 (advertisers, campaigns, orders, assets, advertisements, targeting)
+security:
+  - tokenAuth: []
+tags:
+  - name: Networks
+    description: Top-level account containers that scope podcasts and episodes.
+  - name: Podcasts
+    description: Shows within a network, including feed and monetization settings.
+  - name: Episodes
+    description: Episodes within a podcast, including dynamic ad insertion.
+  - name: Campaigns
+    description: Legacy Direct Sales campaigns scoped to an organization.
+  - name: Orders
+    description: Legacy Direct Sales campaign and promo orders and their advertisements.
+  - name: Direct Sales v2
+    description: v2 advertisers, campaigns, orders, assets, advertisements, and targeting (modeled).
+  - name: Exports
+    description: Metrics Export Service and Impressions Export Service (modeled).
+paths:
+  /networks/{network_id}:
+    get:
+      operationId: getNetwork
+      tags: [Networks]
+      summary: Retrieve a network
+      description: Retrieves a single network (account container) by ID.
+      parameters:
+        - $ref: '#/components/parameters/NetworkId'
+      responses:
+        '200':
+          description: The requested network.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Network'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /networks/{network_id}/podcasts:
+    get:
+      operationId: listPodcasts
+      tags: [Podcasts]
+      summary: List podcasts in a network
+      description: Lists podcasts belonging to a network. Paginated via the Link header.
+      parameters:
+        - $ref: '#/components/parameters/NetworkId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: A page of podcasts.
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: createPodcast
+      tags: [Podcasts]
+      summary: Create a podcast
+      description: Creates a new podcast within a network.
+      parameters:
+        - $ref: '#/components/parameters/NetworkId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Podcast'
+      responses:
+        '201':
+          description: The created podcast.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /networks/{network_id}/podcasts/{podcast_id}:
+    parameters:
+      - $ref: '#/components/parameters/NetworkId'
+      - $ref: '#/components/parameters/PodcastId'
+    get:
+      operationId: getPodcast
+      tags: [Podcasts]
+      summary: Retrieve a podcast
+      description: Retrieves a single podcast by ID.
+      responses:
+        '200':
+          description: The requested podcast.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updatePodcast
+      tags: [Podcasts]
+      summary: Update a podcast
+      description: Updates an existing podcast.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Podcast'
+      responses:
+        '200':
+          description: The updated podcast.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Podcast'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      operationId: deletePodcast
+      tags: [Podcasts]
+      summary: Delete a podcast
+      description: Deletes a podcast.
+      responses:
+        '204':
+          description: Podcast deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /networks/{network_id}/podcasts/{podcast_id}/episodes:
+    parameters:
+      - $ref: '#/components/parameters/NetworkId'
+      - $ref: '#/components/parameters/PodcastId'
+    get:
+      operationId: listEpisodes
+      tags: [Episodes]
+      summary: List episodes in a podcast
+      description: Lists episodes for a podcast. Set draft=true to include drafts. Paginated via the Link header.
+      parameters:
+        - name: draft
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Include draft episodes.
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: A page of episodes.
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: createEpisode
+      tags: [Episodes]
+      summary: Create an episode
+      description: Creates a new episode under a podcast, optionally with audio and ad-insertion configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Episode'
+      responses:
+        '201':
+          description: The created episode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /networks/{network_id}/podcasts/{podcast_id}/episodes/{episode_id}:
+    parameters:
+      - $ref: '#/components/parameters/NetworkId'
+      - $ref: '#/components/parameters/PodcastId'
+      - $ref: '#/components/parameters/EpisodeId'
+    get:
+      operationId: getEpisode
+      tags: [Episodes]
+      summary: Retrieve an episode
+      description: Retrieves a single episode by ID.
+      responses:
+        '200':
+          description: The requested episode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updateEpisode
+      tags: [Episodes]
+      summary: Update an episode
+      description: Updates an existing episode.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Episode'
+      responses:
+        '200':
+          description: The updated episode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      operationId: deleteEpisode
+      tags: [Episodes]
+      summary: Delete an episode
+      description: Deletes an episode.
+      responses:
+        '204':
+          description: Episode deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /organizations/{organization_id}/campaigns:
+    get:
+      operationId: listCampaigns
+      tags: [Campaigns]
+      summary: List campaigns (legacy Direct Sales)
+      description: Lists direct-sales campaigns for an organization. Legacy v1 endpoint being superseded by v2.
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+      responses:
+        '200':
+          description: A list of campaigns.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Campaign'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /organizations/{organization_id}/campaigns/{campaign_id}/orders:
+    get:
+      operationId: listCampaignOrders
+      tags: [Orders]
+      summary: List orders for a campaign (legacy Direct Sales)
+      description: Lists the orders (campaign orders and promo orders) attached to a campaign.
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of orders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /orders/{order_id}/advertisements:
+    get:
+      operationId: listOrderAdvertisements
+      tags: [Orders]
+      summary: List advertisements for an order (legacy Direct Sales)
+      description: Lists the advertisements attached to a campaign order or promo order.
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of advertisements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Advertisement'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/advertisers:
+    servers:
+      - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listAdvertisersV2
+      tags: [Direct Sales v2]
+      summary: List advertisers (v2, modeled)
+      description: Lists advertisers in the v2 Direct Sales API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of advertisers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Advertiser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createAdvertiserV2
+      tags: [Direct Sales v2]
+      summary: Create an advertiser (v2, modeled)
+      description: Creates an advertiser in the v2 Direct Sales API. Path modeled from documented resources.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Advertiser'
+      responses:
+        '201':
+          description: The created advertiser.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertiser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/campaigns:
+    servers:
+      - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listCampaignsV2
+      tags: [Direct Sales v2]
+      summary: List campaigns (v2, modeled)
+      description: Lists direct-sales campaigns in the v2 API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of campaigns.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Campaign'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/orders:
+    servers:
+      - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listOrdersV2
+      tags: [Direct Sales v2]
+      summary: List orders (v2, modeled)
+      description: Lists direct-sales orders in the v2 API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of orders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/assets:
+    servers:
+      - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: listAssetsV2
+      tags: [Direct Sales v2]
+      summary: List creative assets (v2, modeled)
+      description: Lists creative assets used by advertisements in the v2 API. Path modeled from documented resources.
+      responses:
+        '200':
+          description: A list of assets.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/targeting:
+    servers:
+      - url: https://cms.megaphone.fm/api/v2
+    get:
+      operationId: getTargetingOptionsV2
+      tags: [Direct Sales v2]
+      summary: List targeting options (v2, modeled)
+      description: >-
+        Lists targeting reference data (geos - countries, regions, DMAs -
+        devices, Nielsen segments, and advertiser categories) available to v2
+        advertisements. Path modeled from documented resources.
+      responses:
+        '200':
+          description: Targeting options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetingOptions'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /metrics_export:
+    get:
+      operationId: exportMetrics
+      tags: [Exports]
+      summary: Export metrics (modeled)
+      description: >-
+        Pull-based bulk export of download and listener metrics via the Metrics
+        Export Service. Path and parameters are modeled from the documented
+        service description.
+      parameters:
+        - name: start
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: end
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: A metrics export payload.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /impressions_export:
+    get:
+      operationId: exportImpressions
+      tags: [Exports]
+      summary: Export ad impressions (modeled)
+      description: >-
+        Pull-based bulk export of ad-impression data via the Impressions Export
+        Service. Path and parameters are modeled from the documented service
+        description.
+      parameters:
+        - name: start
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: end
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: An impressions export payload.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: >-
+        Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`.
+        Generated on account creation and managed under User Settings; treat as a
+        password and do not reuse across organizations.
+  parameters:
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
+    PodcastId:
+      name: podcast_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The podcast identifier.
+    EpisodeId:
+      name: episode_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The episode identifier.
+    OrganizationId:
+      name: organization_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The organization identifier for Direct Sales resources.
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: Page number for Link-header pagination.
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items per page.
+  headers:
+    Link:
+      description: RFC 5988 Link header carrying pagination relations, including rel="next".
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Network:
+      type: object
+      description: A network - the top-level account container scoping podcasts and episodes.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        podcastsCount:
+          type: integer
+    Podcast:
+      type: object
+      description: A podcast (show) within a network.
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        author:
+          type: string
+        summary:
+          type: string
+        link:
+          type: string
+        imageFile:
+          type: string
+        itunesCategories:
+          type: array
+          items:
+            type: string
+        language:
+          type: string
+        explicit:
+          type: string
+        podType:
+          type: string
+          description: episodic or serial.
+        adFree:
+          type: boolean
+    Episode:
+      type: object
+      description: An episode within a podcast, including dynamic ad insertion configuration.
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        summary:
+          type: string
+        author:
+          type: string
+        pubdate:
+          type: string
+          format: date-time
+        draft:
+          type: boolean
+        explicit:
+          type: string
+        audioFile:
+          type: string
+        duration:
+          type: number
+        insertionPoints:
+          type: array
+          description: Cue points (seconds) for dynamic ad insertion.
+          items:
+            type: number
+    Campaign:
+      type: object
+      description: A direct-sales advertising campaign.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        advertiserId:
+          type: string
+        startsAt:
+          type: string
+          format: date
+        endsAt:
+          type: string
+          format: date
+    Order:
+      type: object
+      description: A campaign order or promo order under a campaign.
+      properties:
+        id:
+          type: string
+        campaignId:
+          type: string
+        type:
+          type: string
+          description: campaign or promo.
+        name:
+          type: string
+        status:
+          type: string
+    Advertisement:
+      type: object
+      description: An advertisement attached to an order.
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        assetId:
+          type: string
+        adType:
+          type: string
+        position:
+          type: string
+          description: preroll, midroll, or postroll.
+    Advertiser:
+      type: object
+      description: An advertiser (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        agencyId:
+          type: string
+        categoryId:
+          type: string
+    Asset:
+      type: object
+      description: A creative asset used by an advertisement (v2 Direct Sales).
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        durationSeconds:
+          type: number
+    TargetingOptions:
+      type: object
+      description: Reference data available for targeting v2 advertisements.
+      properties:
+        countries:
+          type: array
+          items:
+            type: string
+        regions:
+          type: array
+          items:
+            type: string
+        dmas:
+          type: array
+          items:
+            type: string
+        devices:
+          type: array
+          items:
+            type: string
+        nielsenSegments:
+          type: array
+          items:
+            type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string

@@ -1,0 +1,1477 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Advertisements API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Advertisements
+paths:
+  /api/organizations/{organization_id}/campaigns/{campaign_id}/orders/{order_id}/advertisements:
+    get:
+      tags:
+      - Advertisements
+      summary: List All Campaign Order Advertisements
+      description: Returns metadata about all the campaign order advertisements you are authorized to access in the Megaphone platform.
+      operationId: listAllCampaignOrderAdvertisements
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    audioFile:
+                      type: string
+                      format: uri
+                    audioFileProcessing:
+                      type: boolean
+                    audioFileDuration:
+                      type: string
+                    insertionPoint:
+                      type: string
+                    position:
+                      type: integer
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    originalFilename:
+                      type: string
+                    orderId:
+                      type: string
+                      format: uuid
+                    audioFileStatus:
+                      type: string
+                    weight:
+                      type: integer
+                    state:
+                      type: string
+                    displayName:
+                      type: string
+                    trackingUrls:
+                      type: array
+                      items:
+                        type: string
+                    inclusions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          type:
+                            type: string
+                    exclusions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          type:
+                            type: string
+                    geonameIdInclusions:
+                      type: array
+                      items:
+                        type: string
+                    geonameIdExclusions:
+                      type: array
+                      items:
+                        type: string
+                    schedule:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          day:
+                            type: string
+                          startTime:
+                            type: string
+                          endTime:
+                            type: string
+              example:
+              - id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                audioFile: https://example.com/file.mp3
+                audioFileProcessing: false
+                audioFileDuration: '2.3'
+                insertionPoint: pre
+                position: 0
+                createdAt: '2016-11-09T20:49:20.721Z'
+                updatedAt: '2016-11-09T20:50:02.175Z'
+                originalFilename: 2_another-pre-roll.mp3
+                orderId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+                audioFileStatus: success
+                weight: 1
+                state: enabled
+                displayName: Example pre roll ad
+                trackingUrls:
+                - www.trackingurl.com
+                inclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                exclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                geonameIdInclusions:
+                - '6252001'
+                geonameIdExclusions: []
+                schedule:
+                - day: tuesday
+                  startTime: '11:00'
+                  endTime: '21:00'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Advertisements
+      summary: Create a New Campaign Order Advertisement
+      description: Create a new campaign order advertisement by passing in required fields of information into the request body.
+      operationId: createANewCampaignOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                startAt:
+                  type: string
+                  format: date-time
+                endAt:
+                  type: string
+                  format: date-time
+                weight:
+                  type: integer
+                state:
+                  type: string
+                insertionPoint:
+                  type: string
+                orderId:
+                  type: string
+                  format: uuid
+                trackingUrls:
+                  type: array
+                  items:
+                    type: string
+                inclusions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      type:
+                        type: string
+                exclusions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      type:
+                        type: string
+                geonameIdInclusions:
+                  type: array
+                  items:
+                    type: string
+                geonameIdExclusions:
+                  type: array
+                  items:
+                    type: string
+                schedule:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      day:
+                        type: string
+                      startTime:
+                        type: string
+                      endTime:
+                        type: string
+            example:
+              displayName: Example post roll ad
+              startAt: '2023-11-07T20:15:14.293Z'
+              endAt: '2023-12-07T20:15:14.293Z'
+              weight: 1
+              state: enabled
+              insertionPoint: post
+              orderId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+              trackingUrls:
+              - www.trackingurl.com
+              inclusions:
+              - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                type: episode
+              - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                type: podcast
+              exclusions:
+              - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                type: episode
+              - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                type: podcast
+              geonameIdInclusions:
+              - '6252001'
+              geonameIdExclusions:
+              - '5332921'
+              schedule:
+              - day: tuesday
+                startTime: '11:00'
+                endTime: '21:00'
+              - day: wednesday
+                startTime: '11:00'
+                endTime: '21:00'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  displayName:
+                    type: string
+                  audioFile:
+                    type: string
+                  audioFileProcessing:
+                    type: boolean
+                  audioFileDuration:
+                    type: string
+                  audioFileStatus:
+                    type: string
+                  startAt:
+                    type: string
+                    format: date-time
+                  endAt:
+                    type: string
+                    format: date-time
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  weight:
+                    type: integer
+                  state:
+                    type: string
+                  insertionPoint:
+                    type: string
+                  originalFilename: {}
+                  orderId:
+                    type: string
+                    format: uuid
+                  trackingUrls:
+                    type: array
+                    items:
+                      type: string
+                  inclusions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                  exclusions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                  geonameIdInclusions:
+                    type: array
+                    items:
+                      type: string
+                  geonameIdExclusions:
+                    type: array
+                    items:
+                      type: string
+                  schedule:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        day:
+                          type: string
+                        startTime:
+                          type: string
+                        endTime:
+                          type: string
+              example:
+                id: 2f326626-a6bf-11e6-b1f6-6be719f93da8
+                displayName: Example post roll ad
+                audioFile: ''
+                audioFileProcessing: false
+                audioFileDuration: '0.0'
+                audioFileStatus: no_audio
+                startAt: '2023-11-07T20:15:14.293Z'
+                endAt: '2023-12-07T20:15:14.293Z'
+                createdAt: '2021-11-09T20:57:54.216Z'
+                updatedAt: '2022-11-09T20:57:54.216Z'
+                weight: 1
+                state: enabled
+                insertionPoint: post
+                originalFilename: null
+                orderId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+                trackingUrls:
+                - www.trackingurl.com
+                inclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                  type: podcast
+                exclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                  type: podcast
+                geonameIdInclusions:
+                - '6252001'
+                geonameIdExclusions:
+                - '5332921'
+                schedule:
+                - day: tuesday
+                  startTime: '11:00'
+                  endTime: '21:00'
+                - day: wednesday
+                  startTime: '11:00'
+                  endTime: '21:00'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/organizations/{organization_id}/campaigns/{campaign_id}/orders/{order_id}/advertisements/{id}:
+    get:
+      tags:
+      - Advertisements
+      summary: Show a Campaign Order Advertisement
+      description: Get metadata about a single campaign order advertisement.
+      operationId: showACampaignOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  displayName:
+                    type: string
+                  audioFile:
+                    type: string
+                  audioFileProcessing:
+                    type: boolean
+                  audioFileDuration:
+                    type: string
+                  audioFileStatus:
+                    type: string
+                  startAt:
+                    type: string
+                    format: date-time
+                  endAt:
+                    type: string
+                    format: date-time
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  weight:
+                    type: integer
+                  state:
+                    type: string
+                  insertionPoint:
+                    type: string
+                  originalFilename: {}
+                  orderId:
+                    type: string
+                    format: uuid
+                  trackingUrls:
+                    type: array
+                    items:
+                      type: string
+                  inclusions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                  exclusions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                  geonameIdInclusions:
+                    type: array
+                    items:
+                      type: string
+                  geonameIdExclusions:
+                    type: array
+                    items:
+                      type: string
+                  schedule:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        day:
+                          type: string
+                        startTime:
+                          type: string
+                        endTime:
+                          type: string
+              example:
+                id: 2f326626-a6bf-11e6-b1f6-6be719f93da8
+                displayName: Example post roll ad
+                audioFile: ''
+                audioFileProcessing: false
+                audioFileDuration: '0.0'
+                audioFileStatus: no_audio
+                startAt: '2023-11-07T20:15:14.293Z'
+                endAt: '2023-12-07T20:15:14.293Z'
+                createdAt: '2021-11-09T20:57:54.216Z'
+                updatedAt: '2022-11-09T20:57:54.216Z'
+                weight: 1
+                state: enabled
+                insertionPoint: post
+                originalFilename: null
+                orderId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+                trackingUrls:
+                - www.trackingurl.com
+                inclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                  type: podcast
+                exclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                  type: podcast
+                geonameIdInclusions:
+                - '6252001'
+                geonameIdExclusions:
+                - '5332921'
+                schedule:
+                - day: tuesday
+                  startTime: '11:00'
+                  endTime: '21:00'
+                - day: wednesday
+                  startTime: '11:00'
+                  endTime: '21:00'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      tags:
+      - Advertisements
+      summary: Update a Campaign Order Advertisement
+      description: Update an existing campaign order advertisement by sending the attributes that you wish to update in the request body.
+      operationId: updateACampaignOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                insertionPoint:
+                  type: string
+            example:
+              insertionPoint: pre
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  displayName:
+                    type: string
+                  audioFile:
+                    type: string
+                  audioFileProcessing:
+                    type: boolean
+                  audioFileDuration:
+                    type: string
+                  audioFileStatus:
+                    type: string
+                  startAt:
+                    type: string
+                    format: date-time
+                  endAt:
+                    type: string
+                    format: date-time
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  weight:
+                    type: integer
+                  state:
+                    type: string
+                  insertionPoint:
+                    type: string
+                  originalFilename: {}
+                  orderId:
+                    type: string
+                    format: uuid
+                  trackingUrls:
+                    type: array
+                    items:
+                      type: string
+                  inclusions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                  exclusions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                  geonameIdInclusions:
+                    type: array
+                    items:
+                      type: string
+                  geonameIdExclusions:
+                    type: array
+                    items:
+                      type: string
+                  schedule:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        day:
+                          type: string
+                        startTime:
+                          type: string
+                        endTime:
+                          type: string
+              example:
+                id: 2f326626-a6bf-11e6-b1f6-6be719f93da8
+                displayName: Example post roll ad
+                audioFile: ''
+                audioFileProcessing: false
+                audioFileDuration: '0.0'
+                audioFileStatus: no_audio
+                startAt: '2023-11-07T20:15:14.293Z'
+                endAt: '2023-12-07T20:15:14.293Z'
+                createdAt: '2021-11-09T20:57:54.216Z'
+                updatedAt: '2022-11-10T20:57:54.216Z'
+                weight: 1
+                state: enabled
+                insertionPoint: pre
+                originalFilename: null
+                orderId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+                trackingUrls:
+                - www.trackingurl.com
+                inclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                  type: podcast
+                exclusions:
+                - id: 3fe4881a-a2d1-11e6-8e62-8b11e4f93efb
+                  type: episode
+                - id: 3ec8458e-a2d1-11e6-8e62-236c02acd07b
+                  type: podcast
+                geonameIdInclusions:
+                - '6252001'
+                geonameIdExclusions:
+                - '5332921'
+                schedule:
+                - day: tuesday
+                  startTime: '11:00'
+                  endTime: '21:00'
+                - day: wednesday
+                  startTime: '11:00'
+                  endTime: '21:00'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+      - Advertisements
+      summary: Delete a Campaign Order Advertisement
+      description: Remove a campaign order advertisement from the Megaphone platform.
+      operationId: deleteACampaignOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+              example:
+                success: Advertisement with id 2f326626-a6bf-11e6-b1f6-6be719f93da8 successfully destroyed
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/organizations/{organization_id}/promos/{promo_id}/advertisements:
+    get:
+      tags:
+      - Advertisements
+      summary: List All Promo Order Advertisements
+      description: Returns metadata about all the promo order advertisements you are authorized to access in the Megaphone platform.
+      operationId: listAllPromoOrderAdvertisements
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    audioFile:
+                      type: string
+                      format: uri
+                    audioFileProcessing:
+                      type: boolean
+                    audioFileDuration:
+                      type: string
+                    insertionPoint:
+                      type: string
+                    position:
+                      type: integer
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    originalFilename:
+                      type: string
+                    promoId:
+                      type: string
+                      format: uuid
+              example:
+              - id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                audioFile: https://example.com/file.mp3
+                audioFileProcessing: false
+                audioFileDuration: '2.3'
+                insertionPoint: pre
+                position: 0
+                createdAt: '2016-11-09T20:49:20.721Z'
+                updatedAt: '2016-11-09T20:50:02.175Z'
+                originalFilename: 2_another-pre-roll.mp3
+                promoId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+              - id: 94647512-a6be-11e6-b1f6-776225846b29
+                audioFile: https://example.com/file.mp3
+                audioFileProcessing: false
+                audioFileDuration: '2.48'
+                insertionPoint: post
+                position: 1
+                createdAt: '2016-11-09T20:53:34.497Z'
+                updatedAt: '2016-11-09T20:54:50.764Z'
+                originalFilename: 4_another-mid-roll.mp3
+                promoId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Advertisements
+      summary: Create a New Promo Order Advertisement
+      description: Create a new promo order advertisement by passing in required fields of information into the request body.
+      operationId: createANewPromoOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position:
+                  type: integer
+                backgroundAudioFile:
+                  type: string
+                  format: uri
+                insertionPoint:
+                  type: string
+            example:
+              position: 1
+              backgroundAudioFile: http://example.com
+              insertionPoint: post
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  audioFile:
+                    type: string
+                  audioFileProcessing: {}
+                  audioFileDuration:
+                    type: string
+                  insertionPoint:
+                    type: string
+                  position:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  originalFilename: {}
+                  promoId:
+                    type: string
+                    format: uuid
+              example:
+                id: 2f326626-a6bf-11e6-b1f6-6be719f93da8
+                audioFile: ''
+                audioFileProcessing: null
+                audioFileDuration: '0.0'
+                insertionPoint: post
+                position: 1
+                createdAt: '2016-11-09T20:57:54.216Z'
+                updatedAt: '2016-11-09T20:57:54.216Z'
+                originalFilename: null
+                promoId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/organizations/{organization_id}/promos/{promo_id}/advertisements/{id}:
+    get:
+      tags:
+      - Advertisements
+      summary: Show a Promo Order Advertisement
+      description: Get metadata about a single promo order advertisement.
+      operationId: showAPromoOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  audioFile:
+                    type: string
+                    format: uri
+                  audioFileProcessing: {}
+                  audioFileDuration:
+                    type: string
+                  insertionPoint:
+                    type: string
+                  position:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  originalFilename: {}
+                  promoId:
+                    type: string
+                    format: uuid
+              example:
+                id: 2f326626-a6bf-11e6-b1f6-6be719f93da8
+                audioFile: https://example.com/file.mp3
+                audioFileProcessing: null
+                audioFileDuration: '0.0'
+                insertionPoint: post
+                position: 1
+                createdAt: '2016-11-09T20:57:54.216Z'
+                updatedAt: '2016-11-09T20:57:54.216Z'
+                originalFilename: null
+                promoId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      tags:
+      - Advertisements
+      summary: Update a Promo Order Advertisement
+      description: Update an existing promo order advertisement by sending the attributes that you wish to update in the request body.
+      operationId: updateAPromoOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                insertionPoint:
+                  type: string
+            example:
+              insertionPoint: pre
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  audioFile:
+                    type: string
+                  audioFileProcessing: {}
+                  audioFileDuration:
+                    type: string
+                  insertionPoint:
+                    type: string
+                  position:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  originalFilename: {}
+                  promoId:
+                    type: string
+                    format: uuid
+              example:
+                id: 2f326626-a6bf-11e6-b1f6-6be719f93da8
+                audioFile: ''
+                audioFileProcessing: null
+                audioFileDuration: '0.0'
+                insertionPoint: pre
+                position: 1
+                createdAt: '2016-11-09T20:57:54.216Z'
+                updatedAt: '2016-11-09T21:18:55.605Z'
+                originalFilename: null
+                promoId: 4937733c-a2d1-11e6-8e62-fbc34511fed7
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+      - Advertisements
+      summary: Delete a Promo Order Advertisement
+      description: Remove a promo order advertisement from the Megaphone platform.
+      operationId: deleteAPromoOrderAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: promo_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Promo in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of the a UUID
+        example: bdcad5bc-a6b5-11e6-b1f6-5b0e62100551
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+              example:
+                success: Advertisement with id 2f326626-a6bf-11e6-b1f6-6be719f93da8 successfully destroyed
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '422':
+      description: Validation failed. The request body contains invalid or missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  title:
+                  - can't be blank
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

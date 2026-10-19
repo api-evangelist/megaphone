@@ -1,0 +1,86 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Networks API
+  description: The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform.
+  version: '2.0'
+  contact:
+    name: Megaphone by Spotify
+    url: https://developers.megaphone.fm/
+  x-support-email: support-megaphone@spotify.com
+servers:
+- url: https://cms.megaphone.fm/api
+  description: Megaphone API v1 (networks, podcasts, episodes, legacy Direct Sales)
+- url: https://cms.megaphone.fm/api/v2
+  description: Megaphone Direct Sales API v2 (advertisers, campaigns, orders, assets, advertisements, targeting)
+security:
+- tokenAuth: []
+tags:
+- name: Networks
+  description: Top-level account containers that scope podcasts and episodes.
+paths:
+  /networks/{network_id}:
+    get:
+      operationId: getNetwork
+      tags:
+      - Networks
+      summary: Retrieve a network
+      description: Retrieves a single network (account container) by ID.
+      parameters:
+      - $ref: '#/components/parameters/NetworkId'
+      responses:
+        '200':
+          description: The requested network.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Network'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    Network:
+      type: object
+      description: A network - the top-level account container scoping podcasts and episodes.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        podcastsCount:
+          type: integer
+  responses:
+    RateLimited:
+      description: Rate limit exceeded (60 requests per minute).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    NetworkId:
+      name: network_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The network (account container) identifier.
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`. Generated on account creation and managed under User Settings; treat as a password and do not reuse across organizations.'

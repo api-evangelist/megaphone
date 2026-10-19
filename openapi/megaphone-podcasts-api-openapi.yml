@@ -1,217 +1,1060 @@
 openapi: 3.2.0
 info:
   title: Megaphone Podcasts API
-  description: The Megaphone API lets podcast producers and partners manage podcasts, episodes, and advertising on Megaphone by Spotify - an enterprise podcast hosting, distribution, and ad-monetization platform.
-  version: '2.0'
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
   contact:
-    name: Megaphone by Spotify
-    url: https://developers.megaphone.fm/
-  x-support-email: support-megaphone@spotify.com
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
 servers:
-- url: https://cms.megaphone.fm/api
-  description: Megaphone API v1 (networks, podcasts, episodes, legacy Direct Sales)
-- url: https://cms.megaphone.fm/api/v2
-  description: Megaphone Direct Sales API v2 (advertisers, campaigns, orders, assets, advertisements, targeting)
+- url: https://cms.megaphone.fm
+  description: Production
 security:
-- tokenAuth: []
+- ApiToken: []
 tags:
 - name: Podcasts
-  description: Shows within a network, including feed and monetization settings.
 paths:
-  /networks/{network_id}/podcasts:
+  /api/networks/{network_id}/podcasts:
     get:
-      operationId: listPodcasts
       tags:
       - Podcasts
-      summary: List podcasts in a network
-      description: Lists podcasts belonging to a network. Paginated via the Link header.
+      summary: List All Podcasts
+      description: Returns information about all the podcasts that you have permission to view within Megaphone.
+      operationId: listAllPodcasts
       parameters:
-      - $ref: '#/components/parameters/NetworkId'
-      - $ref: '#/components/parameters/Page'
-      - $ref: '#/components/parameters/PerPage'
+      - name: network_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Network in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: externalId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional query param that can scope response to only podcasts with a given `externalId` value.
+        example: 123abc
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
       responses:
         '200':
-          description: A page of podcasts.
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
+          description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Podcast'
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    title:
+                      type: string
+                    link:
+                      type: string
+                      format: uri
+                    copyright:
+                      type: string
+                    author:
+                      type: string
+                    imageFile:
+                      type: string
+                    explicit:
+                      type: string
+                    ownerName:
+                      type: string
+                    subtitle:
+                      type: string
+                    summary:
+                      type: string
+                    ownerEmail:
+                      type: string
+                    language:
+                      type: string
+                    itunesCategories:
+                      type: array
+                      items:
+                        type: string
+                    uid:
+                      type: string
+                    category:
+                      type: string
+                    redirectUrl:
+                      type: string
+                    itunesActive:
+                      type: string
+                    slug:
+                      type: string
+                    networkId:
+                      type: string
+                      format: uuid
+                    redirectedAt:
+                      type: string
+                    itunesRating:
+                      type: string
+                    originalRssUrl:
+                      type: string
+                    itunesIdentifier:
+                      type: string
+                    stitcherIdentifier:
+                      type: string
+                    episodesCount:
+                      type: string
+                    podtracEnabled:
+                      type: string
+                    spotifyIdentifier:
+                      type: string
+                    googlePlayIdentifier:
+                      type: string
+                    episodeLimit:
+                      type: string
+                    feedUrl:
+                      type: string
+                    externalId:
+                      type: string
+                    podcastType:
+                      type: string
+                    advertisingTags:
+                      type: array
+                      items:
+                        type: string
+                    clonedFeedUrls:
+                      type: array
+                      items:
+                        type: string
+                        format: uri
+                    adFreeFeedUrls:
+                      type: array
+                      items:
+                        type: string
+                        format: uri
+                    spanOptIn:
+                      type: string
+              example:
+              - id: 8b6965e6-a1d5-11e6-8dea-d3de4627a69f
+                createdAt: '2016-11-03T14:55:22.039Z'
+                updatedAt: '2016-11-03T14:55:22.039Z'
+                title: An even better Podcast
+                link: https://thebestpodcastintheuniverseagain.com
+                copyright: Supermegacorp
+                author: Bob Smith
+                imageFile: 'null'
+                explicit: 'null'
+                ownerName: Jane Smith
+                subtitle: A podcast about everything
+                summary: The best podcast about things and more
+                ownerEmail: 'null'
+                language: en
+                itunesCategories:
+                - History
+                - Society & Culture
+                uid: TN1275069362
+                category: 'null'
+                redirectUrl: 'null'
+                itunesActive: 'false'
+                slug: 'null'
+                networkId: b98eb64a-9c7d-11e6-9a8f-eb51049b3b2d
+                redirectedAt: 'null'
+                itunesRating: 'null'
+                originalRssUrl: 'null'
+                itunesIdentifier: 'null'
+                stitcherIdentifier: 'null'
+                episodesCount: 'null'
+                podtracEnabled: 'null'
+                spotifyIdentifier: 'null'
+                googlePlayIdentifier: 'null'
+                episodeLimit: 'null'
+                feedUrl: 'null'
+                externalId: 'null'
+                podcastType: serial
+                advertisingTags:
+                - tag1
+                - tag2
+                clonedFeedUrls:
+                - https://feeds.megaphone.fm/APP6193882227
+                adFreeFeedUrls:
+                - https://feeds.megaphone.fm/APP8402266728
+                spanOptIn: unsubmitted
+              - id: 5c1dd196-a1d5-11e6-8dea-1be56d6dc7a1
+                createdAt: '2016-11-03T14:54:02.690Z'
+                updatedAt: '2016-11-03T14:54:02.690Z'
+                title: The Best Podcast in the Universe
+                link: https://thebestpodcastintheuniverse.com
+                copyright: Supermegacorp
+                author: Bob Smith
+                imageFile: 'null'
+                explicit: 'null'
+                ownerName: Jane Smith
+                subtitle: A podcast about all the things
+                summary: The best podcast about things
+                ownerEmail: 'null'
+                language: en
+                itunesCategories:
+                - History
+                - Society & Culture
+                uid: TN4179598523
+                category: 'null'
+                redirectUrl: 'null'
+                itunesActive: 'false'
+                slug: 'null'
+                networkId: b98eb64a-9c7d-11e6-9a8f-eb51049b3b2d
+                redirectedAt: 'null'
+                itunesRating: 'null'
+                originalRssUrl: 'null'
+                itunesIdentifier: 'null'
+                stitcherIdentifier: 'null'
+                episodesCount: 'null'
+                podtracEnabled: 'null'
+                spotifyIdentifier: 'null'
+                googlePlayIdentifier: 'null'
+                episodeLimit: 'null'
+                feedUrl: 'null'
+                externalId: 123abc
+                podcastType: episodic
+                advertisingTags: []
+                clonedFeedUrls: 'null'
+                adFreeFeedUrls: 'null'
+                spanOptIn: unsubmitted
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '429':
-          $ref: '#/components/responses/RateLimited'
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
     post:
-      operationId: createPodcast
       tags:
       - Podcasts
-      summary: Create a podcast
-      description: Creates a new podcast within a network.
-      parameters:
-      - $ref: '#/components/parameters/NetworkId'
+      summary: Create a New Podcast
+      description: Create a new podcast by submitting the required information within the request body.
+      operationId: createANewPodcast
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Podcast'
+              type: object
+              properties:
+                title:
+                  type: string
+                subtitle:
+                  type: string
+                summary:
+                  type: string
+                itunesCategories:
+                  type: array
+                  items:
+                    type: string
+                language:
+                  type: string
+                link:
+                  type: string
+                  format: uri
+                copyright:
+                  type: string
+                author:
+                  type: string
+                backgroundImageFileUrl:
+                  type: string
+                  format: uri
+                ownerName:
+                  type: string
+                podcastType:
+                  type: string
+            example:
+              title: The Best Podcast in the Universe
+              subtitle: A podcast about all the things
+              summary: The best podcast about things
+              itunesCategories:
+              - History
+              - Society & Culture
+              language: en
+              link: https://thebestpodcastintheuniverse.com
+              copyright: Supermegacorp
+              author: Bob Smith
+              backgroundImageFileUrl: http://example.com/path/to/image
+              ownerName: Jane Smith
+              podcastType: serial
       responses:
         '201':
-          description: The created podcast.
+          description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Podcast'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  title:
+                    type: string
+                  link:
+                    type: string
+                    format: uri
+                  copyright:
+                    type: string
+                  author:
+                    type: string
+                  imageFile:
+                    type: string
+                  explicit:
+                    type: string
+                  ownerName:
+                    type: string
+                  subtitle:
+                    type: string
+                  summary:
+                    type: string
+                  ownerEmail:
+                    type: string
+                  language:
+                    type: string
+                  itunesCategories:
+                    type: array
+                    items:
+                      type: string
+                  uid:
+                    type: string
+                  category:
+                    type: string
+                  redirectUrl:
+                    type: string
+                  itunesActive:
+                    type: string
+                  slug:
+                    type: string
+                  networkId:
+                    type: string
+                    format: uuid
+                  redirectedAt:
+                    type: string
+                  itunesRating:
+                    type: string
+                  originalRssUrl:
+                    type: string
+                  itunesIdentifier:
+                    type: string
+                  stitcherIdentifier:
+                    type: string
+                  episodesCount:
+                    type: string
+                  podtracEnabled:
+                    type: string
+                  spotifyIdentifier:
+                    type: string
+                  googlePlayIdentifier:
+                    type: string
+                  episodeLimit:
+                    type: string
+                  externalId:
+                    type: string
+                  podcastType:
+                    type: string
+                  adertisingTags:
+                    type: array
+                    items: {}
+                  excludedCategories:
+                    type: array
+                    items: {}
+                  spanOptIn:
+                    type: string
+              example:
+                id: 6bf5bea4-a1d4-11e6-8dea-b334e2aa4710
+                createdAt: '2016-11-03T14:47:19.770Z'
+                updatedAt: '2016-11-03T14:47:19.770Z'
+                title: The Best Podcast in the Universe
+                link: https://thebestpodcastintheuniverse.com
+                copyright: Supermegacorp
+                author: Bob Smith
+                imageFile: 'null'
+                explicit: 'null'
+                ownerName: Jane Smith
+                subtitle: A podcast about all the things
+                summary: The best podcast about things
+                ownerEmail: 'null'
+                language: en
+                itunesCategories:
+                - History
+                - Society & Culture
+                uid: TN8545546528
+                category: 'null'
+                redirectUrl: 'null'
+                itunesActive: 'false'
+                slug: 'null'
+                networkId: b98eb64a-9c7d-11e6-9a8f-eb51049b3b2d
+                redirectedAt: 'null'
+                itunesRating: 'null'
+                originalRssUrl: 'null'
+                itunesIdentifier: 'null'
+                stitcherIdentifier: 'null'
+                episodesCount: 'null'
+                podtracEnabled: 'null'
+                spotifyIdentifier: 'null'
+                googlePlayIdentifier: 'null'
+                episodeLimit: 'null'
+                externalId: 'null'
+                podcastType: serial
+                adertisingTags: []
+                excludedCategories: []
+                spanOptIn: unsubmitted
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '429':
-          $ref: '#/components/responses/RateLimited'
-  /networks/{network_id}/podcasts/{podcast_id}:
-    parameters:
-    - $ref: '#/components/parameters/NetworkId'
-    - $ref: '#/components/parameters/PodcastId'
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+      parameters:
+      - name: network_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+  /api/networks/{network_id}/podcasts/{id}:
     get:
-      operationId: getPodcast
       tags:
       - Podcasts
-      summary: Retrieve a podcast
-      description: Retrieves a single podcast by ID.
+      summary: Show a Podcast
+      description: Get metadata about a single podcast.
+      operationId: showAPodcast
+      parameters:
+      - name: network_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Network in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Podcast in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
       responses:
         '200':
-          description: The requested podcast.
+          description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Podcast'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  title:
+                    type: string
+                  link:
+                    type: string
+                    format: uri
+                  copyright:
+                    type: string
+                  author:
+                    type: string
+                  imageFile:
+                    type: string
+                  explicit:
+                    type: string
+                  ownerName:
+                    type: string
+                  subtitle:
+                    type: string
+                  summary:
+                    type: string
+                  ownerEmail:
+                    type: string
+                  language:
+                    type: string
+                  itunesCategories:
+                    type: array
+                    items:
+                      type: string
+                  uid:
+                    type: string
+                  category:
+                    type: string
+                  redirectUrl:
+                    type: string
+                  itunesActive:
+                    type: string
+                  slug:
+                    type: string
+                  networkId:
+                    type: string
+                    format: uuid
+                  redirectedAt:
+                    type: string
+                  itunesRating:
+                    type: string
+                  originalRssUrl:
+                    type: string
+                  itunesIdentifier:
+                    type: string
+                  stitcherIdentifier:
+                    type: string
+                  episodesCount:
+                    type: string
+                  podtracEnabled:
+                    type: string
+                  spotifyIdentifier:
+                    type: string
+                  googlePlayIdentifier:
+                    type: string
+                  episodeLimit:
+                    type: string
+                  feedUrl:
+                    type: string
+                    format: uri
+                  externalId:
+                    type: string
+                  podcastType:
+                    type: string
+                  advertisingTags:
+                    type: array
+                    items:
+                      type: string
+                  clonedFeedUrls:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  adFreeFeedUrls:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  excludedCategories:
+                    type: array
+                    items:
+                      type: string
+                  spanOptIn:
+                    type: string
+              example:
+                id: 5c1dd196-a1d5-11e6-8dea-1be56d6dc7a1
+                createdAt: '2016-11-03T14:54:02.690Z'
+                updatedAt: '2016-11-03T14:54:02.690Z'
+                title: The Best Podcast in the Universe
+                link: https://thebestpodcastintheuniverse.com
+                copyright: Supermegacorp
+                author: Bob Smith
+                imageFile: 'null'
+                explicit: 'null'
+                ownerName: Jane Smith
+                subtitle: A podcast about all the things
+                summary: The best podcast about things
+                ownerEmail: 'null'
+                language: en
+                itunesCategories:
+                - History
+                - Society & Culture
+                uid: TN4179598523
+                category: 'null'
+                redirectUrl: 'null'
+                itunesActive: 'false'
+                slug: 'null'
+                networkId: b98eb64a-9c7d-11e6-9a8f-eb51049b3b2d
+                redirectedAt: 'null'
+                itunesRating: 'null'
+                originalRssUrl: 'null'
+                itunesIdentifier: 'null'
+                stitcherIdentifier: 'null'
+                episodesCount: 'null'
+                podtracEnabled: 'null'
+                spotifyIdentifier: 'null'
+                googlePlayIdentifier: 'null'
+                episodeLimit: 'null'
+                feedUrl: http://feeds.megaphone.fm/thebestpodcast
+                externalId: 'null'
+                podcastType: serial
+                advertisingTags:
+                - tag1
+                - tag2
+                clonedFeedUrls:
+                - https://feeds.megaphone.fm/APP6193882227
+                adFreeFeedUrls:
+                - https://feeds.megaphone.fm/APP8402266728
+                excludedCategories:
+                - ADV-1-2
+                - ADV-22-205
+                spanOptIn: active
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
     put:
-      operationId: updatePodcast
       tags:
       - Podcasts
-      summary: Update a podcast
-      description: Updates an existing podcast.
+      summary: Update a Podcast
+      description: Update an existing podcast by sending the attributes you wish to update in the request body.
+      operationId: updateAPodcast
+      parameters:
+      - name: network_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Network in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Podcast in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Podcast'
+              type: object
+              properties:
+                title:
+                  type: string
+                summary:
+                  type: string
+                spanOptIn:
+                  type: string
+            example:
+              title: The updated title
+              summary: An updated summary
+              spanOptIn: paused
       responses:
         '200':
-          description: The updated podcast.
+          description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Podcast'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  title:
+                    type: string
+                  link:
+                    type: string
+                    format: uri
+                  copyright:
+                    type: string
+                  author:
+                    type: string
+                  imageFile:
+                    type: string
+                  explicit:
+                    type: string
+                  ownerName:
+                    type: string
+                  subtitle:
+                    type: string
+                  summary:
+                    type: string
+                  ownerEmail:
+                    type: string
+                  language:
+                    type: string
+                  itunesCategories:
+                    type: array
+                    items:
+                      type: string
+                  uid:
+                    type: string
+                  category:
+                    type: string
+                  redirectUrl:
+                    type: string
+                  itunesActive:
+                    type: string
+                  slug:
+                    type: string
+                  networkId:
+                    type: string
+                    format: uuid
+                  redirectedAt:
+                    type: string
+                  itunesRating:
+                    type: string
+                  originalRssUrl:
+                    type: string
+                  itunesIdentifier:
+                    type: string
+                  stitcherIdentifier:
+                    type: string
+                  episodesCount:
+                    type: string
+                  podtracEnabled:
+                    type: string
+                  spotifyIdentifier:
+                    type: string
+                  googlePlayIdentifier:
+                    type: string
+                  episodeLimit:
+                    type: string
+                  externalId:
+                    type: string
+                  podcastType:
+                    type: string
+                  advertisingTags:
+                    type: array
+                    items:
+                      type: string
+                  excludedCategories:
+                    type: array
+                    items:
+                      type: string
+                  spanOptIn:
+                    type: string
+              example:
+                id: 6bf5bea4-a1d4-11e6-8dea-b334e2aa4710
+                createdAt: '2016-11-03T14:47:19.770Z'
+                updatedAt: '2016-11-03T14:49:47.591Z'
+                title: The updated title
+                link: https://thebestpodcastintheuniverse.com
+                copyright: Supermegacorp
+                author: Bob Smith
+                imageFile: 'null'
+                explicit: 'null'
+                ownerName: Jane Smith
+                subtitle: A podcast about all the things
+                summary: An updated summary
+                ownerEmail: 'null'
+                language: en
+                itunesCategories:
+                - History
+                - Society & Culture
+                uid: TN8545546528
+                category: 'null'
+                redirectUrl: 'null'
+                itunesActive: 'false'
+                slug: 'null'
+                networkId: b98eb64a-9c7d-11e6-9a8f-eb51049b3b2d
+                redirectedAt: 'null'
+                itunesRating: 'null'
+                originalRssUrl: 'null'
+                itunesIdentifier: 'null'
+                stitcherIdentifier: 'null'
+                episodesCount: 'null'
+                podtracEnabled: 'null'
+                spotifyIdentifier: 'null'
+                googlePlayIdentifier: 'null'
+                episodeLimit: 'null'
+                externalId: 'null'
+                podcastType: serial
+                advertisingTags:
+                - tag1
+                - tag2
+                excludedCategories:
+                - ADV-1-2
+                - ADV-22-205
+                spanOptIn: paused
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
     delete:
-      operationId: deletePodcast
       tags:
       - Podcasts
-      summary: Delete a podcast
-      description: Deletes a podcast.
+      summary: Delete a Podcast
+      description: Remove a podcast from the Megaphone platform.
+      operationId: deleteAPodcast
+      parameters:
+      - name: network_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Network in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Podcast in the form of a UUID
+        example: 731851fc-9fad-11e6-a338-072240a555ac
+      - name: updated_since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional query param that will scope the response to only podcasts that have
+
+          been updated since the Date and Time that is provided.
+
+          '
+        example: 2019-11-22T19:44:09+0000
       responses:
-        '204':
-          description: Podcast deleted.
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+              example:
+                success: Podcast with id 10b2e0b0-9f9c-11e6-a4de-cf403e562e22 successfully destroyed
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
 components:
-  parameters:
-    PerPage:
-      name: per_page
-      in: query
-      required: false
-      schema:
-        type: integer
-      description: Number of items per page.
-    Page:
-      name: page
-      in: query
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-      description: Page number for Link-header pagination.
-    PodcastId:
-      name: podcast_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The podcast identifier.
-    NetworkId:
-      name: network_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: The network (account container) identifier.
-  schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-    Podcast:
-      type: object
-      description: A podcast (show) within a network.
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        subtitle:
-          type: string
-        author:
-          type: string
-        summary:
-          type: string
-        link:
-          type: string
-        imageFile:
-          type: string
-        itunesCategories:
-          type: array
-          items:
-            type: string
-        language:
-          type: string
-        explicit:
-          type: string
-        podType:
-          type: string
-          description: episodic or serial.
-        adFree:
-          type: boolean
-  headers:
-    Link:
-      description: RFC 5988 Link header carrying pagination relations, including rel="next".
-      schema:
-        type: string
   responses:
-    RateLimited:
-      description: Rate limit exceeded (60 requests per minute).
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid API token.
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '422':
+      description: Validation failed. The request body contains invalid or missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  title:
+                  - can't be blank
   securitySchemes:
-    tokenAuth:
+    ApiToken:
       type: apiKey
       in: header
       name: Authorization
-      description: 'Per-user API token sent as `Authorization: Token token="<API_TOKEN>"`. Generated on account creation and managed under User Settings; treat as a password and do not reuse across organizations.'
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

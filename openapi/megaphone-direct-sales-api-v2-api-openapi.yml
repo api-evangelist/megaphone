@@ -1,0 +1,3912 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Direct Sales API v2 API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Direct Sales API v2
+  description: '**⚠️ AVAILABILITY ⚠️**
+
+
+    The Direct Sales API v2 provides enhanced endpoints for managing advertisers, campaigns, orders, assets, and advertisements for Standard and Priority campaign types.
+
+
+    **Base URL:** `https://cms.megaphone.fm/api/v2`
+
+
+    **Available From:** April 15, 2026 10:00:00 AM EST
+
+
+    **Migration Timeline:**
+
+
+    - **Before April 15, 2026:** v2 endpoints not yet available - use legacy endpoints
+
+
+    - **April 15 - July 14, 2026:** Both legacy and v2 endpoints work - migration period
+
+
+    - **After July 14, 2026:** Legacy endpoints removed
+
+
+    **Pagination Note (v2 Direct Sales)**
+
+
+    Paginated v2 list endpoints (advertisers, campaigns, orders, advertisements, assets, and geo targeting) cap `per_page` at **50** (not 500 as stated in the global section) and follow the global pagination convention (see the Pagination section above) with two additional exceptions:
+
+
+    - `X-Total` is **not** returned.
+
+
+    - The `Link` header does **not** include a `last` rel.
+
+
+    `X-Page`, `X-Per-Page`, and `Link` (`first`, `next`, `previous`) are returned as documented.
+
+
+    Episode Topics and Audience Interests return all records in a single response and do not support pagination.'
+paths:
+  /api/v2/organizations/{organization_id}/advertisers:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List All Advertisers
+      description: List all advertisers for an organization. Returns advertiser metadata including ID, name, display name, currency, categories, and agency association.
+      operationId: listAllAdvertisers
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    agencyId:
+                      type: string
+                    name:
+                      type: string
+                    displayName:
+                      type: string
+                    currency:
+                      type: string
+                    categories:
+                      type: array
+                      items:
+                        type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+              example:
+              - id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912-db00-11e9-af1e-570ac48ae80a
+                name: Starbucks
+                displayName: Starbucks
+                currency: USD
+                categories:
+                - ADV-6-65
+                - ADV-6-70
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Create an Advertiser
+      description: Create a new advertiser.
+      operationId: createAnAdvertiserDirectSalesApiV2
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                displayName:
+                  type: string
+                currency:
+                  type: string
+                categories:
+                  type: array
+                  items:
+                    type: string
+                agencyId:
+                  type: string
+            example:
+              name: Starbucks
+              displayName: Starbucks Coffee
+              currency: USD
+              categories:
+              - ADV-6-65
+              - ADV-6-70
+              agencyId: 9uew912-db00-11e9-af1e-570ac48ae80a
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  agencyId:
+                    type: string
+                  name:
+                    type: string
+                  displayName:
+                    type: string
+                  currency:
+                    type: string
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912-db00-11e9-af1e-570ac48ae80a
+                name: Starbucks
+                displayName: Starbucks Coffee
+                currency: USD
+                categories:
+                - ADV-6-65
+                - ADV-6-70
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/advertisers/{advertiser_id}:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: Get an Advertiser
+      description: Get metadata for a single advertiser.
+      operationId: getAnAdvertiser
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  agencyId:
+                    type: string
+                  name:
+                    type: string
+                  displayName:
+                    type: string
+                  currency:
+                    type: string
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912-db00-11e9-af1e-570ac48ae80a
+                name: Starbucks
+                displayName: Starbucks Coffee
+                currency: USD
+                categories:
+                - ADV-6-65
+                - ADV-6-70
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Direct Sales API v2
+      summary: Update an Advertiser
+      description: Update an existing advertiser.
+      operationId: updateAnAdvertiserDirectSalesApiV2
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                categories:
+                  type: array
+                  items:
+                    type: string
+            example:
+              name: Starbucks International
+              categories:
+              - ADV-6-65
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  agencyId:
+                    type: string
+                  name:
+                    type: string
+                  displayName:
+                    type: string
+                  currency:
+                    type: string
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: 7yew148812-db00-11e9-af1e-1367d8562de8
+                agencyId: 9uew912-db00-11e9-af1e-570ac48ae80a
+                name: Starbucks International
+                displayName: Starbucks Coffee International
+                currency: USD
+                categories:
+                - ADV-6-65
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-02-10T14:20:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+      - Direct Sales API v2
+      summary: Delete an Advertiser
+      description: Delete an advertiser.
+      operationId: deleteAnAdvertiserDirectSalesApiV2
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+              example:
+                success: Advertiser deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/campaigns:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List All Campaigns
+      description: List all campaigns (Standard, Priority, and [Old] Standard). Returns campaign metadata including ID, name, advertiser details, budget, type, status, total CPM, and timestamps.
+      operationId: listAllCampaignsDirectSalesApiV2
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    advertiser:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        displayName:
+                          type: string
+                        currency:
+                          type: string
+                    externalId:
+                      type: string
+                    budget:
+                      type: number
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    totalCpm:
+                      type: number
+                    includeAdCopy:
+                      type: boolean
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+              example:
+              - id: 4ba157f0-a506-11e6-9164-437b083548dd
+                name: Spring 2026 Campaign
+                advertiser:
+                  id: 491d22de-a2d1-11e6-8e62-975da49f7a68
+                  name: Starbucks
+                  displayName: Starbucks Coffee
+                  currency: USD
+                externalId: SPRING2026
+                budget: 50000.0
+                type: standard
+                status: delivering
+                totalCpm: 25.5
+                includeAdCopy: true
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Create a Campaign
+      description: Create a Standard or Priority campaign.
+      operationId: createACampaign
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                advertiserId:
+                  type: string
+                  format: uuid
+                type:
+                  type: string
+                externalId:
+                  type: string
+                budget:
+                  type: number
+            example:
+              name: Spring 2026 Campaign
+              advertiserId: 491d22de-a2d1-11e6-8e62-975da49f7a68
+              type: standard
+              externalId: SPRING2026
+              budget: 50000.0
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  advertiser:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                      displayName:
+                        type: string
+                      currency:
+                        type: string
+                  externalId:
+                    type: string
+                  budget:
+                    type: number
+                  type:
+                    type: string
+                  status:
+                    type: string
+                  totalCpm:
+                    type: integer
+                  includeAdCopy:
+                    type: boolean
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: 4ba157f0-a506-11e6-9164-437b083548dd
+                name: Spring 2026 Campaign
+                advertiser:
+                  id: 491d22de-a2d1-11e6-8e62-975da49f7a68
+                  name: Starbucks
+                  displayName: Starbucks Coffee
+                  currency: USD
+                externalId: SPRING2026
+                budget: 50000.0
+                type: standard
+                status: not_delivering
+                totalCpm: 0
+                includeAdCopy: true
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/campaigns/{campaign_id}:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: Get a Campaign
+      description: Get a campaign (Standard, Priority, or [Old] Standard).
+      operationId: getACampaign
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  advertiser:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                      displayName:
+                        type: string
+                      currency:
+                        type: string
+                  externalId:
+                    type: string
+                  budget:
+                    type: number
+                  type:
+                    type: string
+                  status:
+                    type: string
+                  totalCpm:
+                    type: number
+                  includeAdCopy:
+                    type: boolean
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: 4ba157f0-a506-11e6-9164-437b083548dd
+                name: Spring 2026 Campaign
+                advertiser:
+                  id: 491d22de-a2d1-11e6-8e62-975da49f7a68
+                  name: Starbucks
+                  displayName: Starbucks Coffee
+                  currency: USD
+                externalId: SPRING2026
+                budget: 50000.0
+                type: standard
+                status: delivering
+                totalCpm: 25.5
+                includeAdCopy: true
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Direct Sales API v2
+      summary: Update a Campaign
+      description: Update a Standard or Priority campaign.
+      operationId: updateACampaignDirectSalesApiV2
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                externalId:
+                  type: string
+                budget:
+                  type: number
+            example:
+              name: Summer 2026 Campaign
+              externalId: SPRING2026
+              budget: 75000.0
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  advertiser:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                      displayName:
+                        type: string
+                      currency:
+                        type: string
+                  externalId:
+                    type: string
+                  budget:
+                    type: number
+                  type:
+                    type: string
+                  status:
+                    type: string
+                  totalCpm:
+                    type: number
+                  includeAdCopy:
+                    type: boolean
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: 4ba157f0-a506-11e6-9164-437b083548dd
+                name: Summer 2026 Campaign
+                advertiser:
+                  id: 491d22de-a2d1-11e6-8e62-975da49f7a68
+                  name: Starbucks
+                  displayName: Starbucks Coffee
+                  currency: USD
+                externalId: SUMMER2026
+                budget: 75000.0
+                type: standard
+                status: delivering
+                totalCpm: 25.5
+                includeAdCopy: false
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-02-10T14:20:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/campaigns/{campaign_id}/orders:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List All Orders
+      description: List all orders for a campaign. (Standard, Priority, and [Old] Standard)
+      operationId: listAllOrdersDirectSalesApiV2
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    impressionsCap:
+                      type: integer
+                    schedule:
+                      type: object
+                      properties:
+                        startAt:
+                          type: string
+                          format: date-time
+                        endAt:
+                          type: string
+                          format: date-time
+                        flightTimezone:
+                          type: string
+                    adHash:
+                      type: string
+                    position:
+                      type: integer
+                    pacingType:
+                      type: string
+                    cpmRate:
+                      type: number
+                    state:
+                      type: string
+                    includeContentTargets:
+                      type: object
+                      properties:
+                        shows:
+                          type: array
+                          items:
+                            type: string
+                        episodes: {}
+                        tags: {}
+                        topics: {}
+                    excludeContentTargets:
+                      type: object
+                      properties:
+                        shows: {}
+                        episodes:
+                          type: array
+                          items:
+                            type: string
+                        tags: {}
+                        topics: {}
+                    includeGeotargets:
+                      type: object
+                      properties:
+                        regionIds:
+                          type: array
+                          items:
+                            type: string
+                        cityIds:
+                          type: array
+                          items:
+                            type: string
+                    excludeGeotargets:
+                      type: object
+                      properties:
+                        dmaIds:
+                          type: array
+                          items:
+                            type: string
+                        postalCodeIds:
+                          type: array
+                          items:
+                            type: string
+                    includeDeviceTargets:
+                      type: array
+                      items:
+                        type: string
+                    includeAudienceTargets:
+                      type: object
+                      properties:
+                        audienceInterestIds:
+                          type: array
+                          items:
+                            type: string
+                        ageGroups:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              min:
+                                type: integer
+                              max:
+                                type: integer
+                        gender:
+                          type: string
+                    copy:
+                      type: object
+                      properties:
+                        notes:
+                          type: string
+                        promoCode:
+                          type: string
+                        vanityUrl:
+                          type: string
+                          format: uri
+                    frequencyCaps:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          frequencyUnit:
+                            type: string
+                          frequencyPeriod:
+                            type: integer
+                          maxImpressions:
+                            type: integer
+                    externalId:
+                      type: string
+                    dcmLineItemId:
+                      type: string
+                    assetFormat:
+                      type: string
+                    status:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    legacyFields: {}
+              example:
+              - id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Q1 2026 Order
+                impressionsCap: 100000
+                schedule:
+                  startAt: '2026-03-01T00:00:00'
+                  endAt: '2026-03-31T23:59:59'
+                  flightTimezone: America/New_York
+                adHash: '012'
+                position: 1
+                pacingType: even
+                cpmRate: 25.5
+                state: 'on'
+                includeContentTargets:
+                  shows:
+                  - show-uuid-1
+                  - show-uuid-2
+                  episodes: null
+                  tags: null
+                  topics: null
+                excludeContentTargets:
+                  shows: null
+                  episodes:
+                  - episode-uuid-1
+                  tags: null
+                  topics: null
+                includeGeotargets:
+                  regionIds:
+                  - '5128581'
+                  cityIds:
+                  - '4930956'
+                excludeGeotargets:
+                  dmaIds:
+                  - '501'
+                  postalCodeIds:
+                  - US:10001
+                includeDeviceTargets:
+                - ios
+                - android
+                includeAudienceTargets:
+                  audienceInterestIds:
+                  - interest-123
+                  ageGroups:
+                  - min: 25
+                    max: 34
+                  gender: all
+                copy:
+                  notes: Use upbeat tone
+                  promoCode: SAVE20
+                  vanityUrl: https://example.com/promo
+                frequencyCaps:
+                - frequencyUnit: day
+                  frequencyPeriod: 1
+                  maxImpressions: 5
+                externalId: EXT-12345
+                dcmLineItemId: '355599820'
+                assetFormat: audio
+                status: active
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                legacyFields: null
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Create an Order
+      description: Create an order under a Standard or Priority campaign.
+      operationId: createAnOrder
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                impressionsCap:
+                  type: integer
+                schedule:
+                  type: object
+                  properties:
+                    startAt:
+                      type: string
+                      format: date-time
+                    endAt:
+                      type: string
+                      format: date-time
+                    flightTimezone:
+                      type: string
+                position:
+                  type: integer
+                pacingType:
+                  type: string
+                cpmRate:
+                  type: number
+                state:
+                  type: string
+                includeContentTargets:
+                  type: object
+                  properties:
+                    shows:
+                      type: array
+                      items:
+                        type: string
+                excludeContentTargets:
+                  type: object
+                  properties:
+                    episodes:
+                      type: array
+                      items:
+                        type: string
+                includeGeotargets:
+                  type: object
+                  properties:
+                    regionIds:
+                      type: array
+                      items:
+                        type: string
+                    cityIds:
+                      type: array
+                      items:
+                        type: string
+                excludeGeotargets:
+                  type: object
+                  properties:
+                    dmaIds:
+                      type: array
+                      items:
+                        type: string
+                    postalCodeIds:
+                      type: array
+                      items:
+                        type: string
+                includeDeviceTargets:
+                  type: array
+                  items:
+                    type: string
+                includeAudienceTargets:
+                  type: object
+                  properties:
+                    audienceInterestIds:
+                      type: array
+                      items:
+                        type: string
+                    ageGroups:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          min:
+                            type: integer
+                          max:
+                            type: integer
+                    gender:
+                      type: string
+                copy:
+                  type: object
+                  properties:
+                    notes:
+                      type: string
+                    promoCode:
+                      type: string
+                    vanityUrl:
+                      type: string
+                      format: uri
+                frequencyCaps:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      frequencyUnit:
+                        type: string
+                      frequencyPeriod:
+                        type: integer
+                      maxImpressions:
+                        type: integer
+                externalId:
+                  type: string
+                dcmLineItemId:
+                  type: string
+                assetFormat:
+                  type: string
+            example:
+              name: Q1 2026 Order
+              impressionsCap: 100000
+              schedule:
+                startAt: '2026-03-01T00:00:00'
+                endAt: '2026-03-31T23:59:59'
+                flightTimezone: America/New_York
+              position: 1
+              pacingType: even
+              cpmRate: 25.5
+              state: 'on'
+              includeContentTargets:
+                shows:
+                - show-uuid-1
+                - show-uuid-2
+              excludeContentTargets:
+                episodes:
+                - episode-uuid-1
+              includeGeotargets:
+                regionIds:
+                - '5128581'
+                cityIds:
+                - '4930956'
+              excludeGeotargets:
+                dmaIds:
+                - '501'
+                postalCodeIds:
+                - US:10001
+              includeDeviceTargets:
+              - ios
+              - android
+              includeAudienceTargets:
+                audienceInterestIds:
+                - interest-123
+                ageGroups:
+                - min: 25
+                  max: 34
+                gender: all
+              copy:
+                notes: Use upbeat tone
+                promoCode: SAVE20
+                vanityUrl: https://example.com/promo
+              frequencyCaps:
+              - frequencyUnit: day
+                frequencyPeriod: 1
+                maxImpressions: 5
+              externalId: EXT-12345
+              dcmLineItemId: '355599820'
+              assetFormat: audio
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  impressionsCap:
+                    type: integer
+                  adHash:
+                    type: string
+                  position:
+                    type: integer
+                  pacingType:
+                    type: string
+                  cpmRate:
+                    type: number
+                  state:
+                    type: string
+                  status:
+                    type: string
+                  externalId:
+                    type: string
+                  dcmLineItemId:
+                    type: string
+                  assetFormat:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                      flightTimezone:
+                        type: string
+                  includeContentTargets:
+                    type: object
+                    properties:
+                      shows:
+                        type: array
+                        items:
+                          type: string
+                      episodes: {}
+                      tags: {}
+                      topics: {}
+                  excludeContentTargets:
+                    type: object
+                    properties:
+                      shows: {}
+                      episodes:
+                        type: array
+                        items:
+                          type: string
+                      tags: {}
+                      topics: {}
+                  includeGeotargets:
+                    type: object
+                    properties:
+                      countryCodes:
+                        type: array
+                        items:
+                          type: string
+                      regionIds:
+                        type: array
+                        items:
+                          type: string
+                      cityIds:
+                        type: array
+                        items:
+                          type: string
+                      dmaIds: {}
+                      postalCodeIds: {}
+                  excludeGeotargets:
+                    type: object
+                    properties:
+                      countryCodes: {}
+                      regionIds: {}
+                      cityIds: {}
+                      dmaIds:
+                        type: array
+                        items:
+                          type: string
+                      postalCodeIds:
+                        type: array
+                        items:
+                          type: string
+                  includeDeviceTargets:
+                    type: array
+                    items:
+                      type: string
+                  includeAudienceTargets: {}
+                  copy:
+                    type: object
+                    properties:
+                      notes:
+                        type: string
+                      promoCode:
+                        type: string
+                      vanityUrl:
+                        type: string
+                        format: uri
+                  frequencyCaps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        frequencyUnit:
+                          type: string
+                        frequencyPeriod:
+                          type: integer
+                        maxImpressions:
+                          type: integer
+                  legacyFields: {}
+              example:
+                id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Q1 2026 Order
+                impressionsCap: 100000
+                adHash: '012'
+                position: 1
+                pacingType: even
+                cpmRate: 25.5
+                state: 'on'
+                status: scheduled
+                externalId: EXT-12345
+                dcmLineItemId: '355599820'
+                assetFormat: audio
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                schedule:
+                  startAt: '2026-03-01T00:00:00'
+                  endAt: '2026-03-31T23:59:59'
+                  flightTimezone: America/New_York
+                includeContentTargets:
+                  shows:
+                  - show-uuid-1
+                  - show-uuid-2
+                  episodes: null
+                  tags: null
+                  topics: null
+                excludeContentTargets:
+                  shows: null
+                  episodes:
+                  - episode-uuid-1
+                  tags: null
+                  topics: null
+                includeGeotargets:
+                  countryCodes:
+                  - US
+                  regionIds:
+                  - '5128581'
+                  cityIds:
+                  - '4930956'
+                  dmaIds: null
+                  postalCodeIds: null
+                excludeGeotargets:
+                  countryCodes: null
+                  regionIds: null
+                  cityIds: null
+                  dmaIds:
+                  - '501'
+                  postalCodeIds:
+                  - US:10001
+                includeDeviceTargets:
+                - ios
+                - android
+                includeAudienceTargets: null
+                copy:
+                  notes: Use upbeat tone
+                  promoCode: SAVE20
+                  vanityUrl: https://example.com/promo
+                frequencyCaps:
+                - frequencyUnit: day
+                  frequencyPeriod: 1
+                  maxImpressions: 5
+                legacyFields: null
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/campaigns/{campaign_id}/orders/{order_id}:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: Get an Order
+      description: Get an order (Standard, Priority, or [Old] Standard).
+      operationId: getAnOrder
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  impressionsCap:
+                    type: integer
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                      flightTimezone:
+                        type: string
+                  adHash:
+                    type: string
+                  position:
+                    type: integer
+                  pacingType:
+                    type: string
+                  cpmRate:
+                    type: number
+                  state:
+                    type: string
+                  includeContentTargets:
+                    type: object
+                    properties:
+                      shows:
+                        type: array
+                        items:
+                          type: string
+                      episodes: {}
+                      tags: {}
+                      topics: {}
+                  excludeContentTargets:
+                    type: object
+                    properties:
+                      shows: {}
+                      episodes:
+                        type: array
+                        items:
+                          type: string
+                      tags: {}
+                      topics: {}
+                  includeGeotargets:
+                    type: object
+                    properties:
+                      regionIds:
+                        type: array
+                        items:
+                          type: string
+                      cityIds:
+                        type: array
+                        items:
+                          type: string
+                  excludeGeotargets:
+                    type: object
+                    properties:
+                      dmaIds:
+                        type: array
+                        items:
+                          type: string
+                      postalCodeIds:
+                        type: array
+                        items:
+                          type: string
+                  includeDeviceTargets:
+                    type: array
+                    items:
+                      type: string
+                  includeAudienceTargets:
+                    type: object
+                    properties:
+                      audienceInterestIds:
+                        type: array
+                        items:
+                          type: string
+                      ageGroups:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            min:
+                              type: integer
+                            max:
+                              type: integer
+                      gender:
+                        type: string
+                  copy:
+                    type: object
+                    properties:
+                      notes:
+                        type: string
+                      promoCode:
+                        type: string
+                      vanityUrl:
+                        type: string
+                        format: uri
+                  frequencyCaps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        frequencyUnit:
+                          type: string
+                        frequencyPeriod:
+                          type: integer
+                        maxImpressions:
+                          type: integer
+                  externalId:
+                    type: string
+                  dcmLineItemId:
+                    type: string
+                  assetFormat:
+                    type: string
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  legacyFields: {}
+              example:
+                id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Q1 2026 Order
+                impressionsCap: 100000
+                schedule:
+                  startAt: '2026-03-01T00:00:00'
+                  endAt: '2026-03-31T23:59:59'
+                  flightTimezone: America/New_York
+                adHash: '012'
+                position: 1
+                pacingType: even
+                cpmRate: 25.5
+                state: 'on'
+                includeContentTargets:
+                  shows:
+                  - show-uuid-1
+                  - show-uuid-2
+                  episodes: null
+                  tags: null
+                  topics: null
+                excludeContentTargets:
+                  shows: null
+                  episodes:
+                  - episode-uuid-1
+                  tags: null
+                  topics: null
+                includeGeotargets:
+                  regionIds:
+                  - '5128581'
+                  cityIds:
+                  - '4930956'
+                excludeGeotargets:
+                  dmaIds:
+                  - '501'
+                  postalCodeIds:
+                  - US:10001
+                includeDeviceTargets:
+                - ios
+                - android
+                includeAudienceTargets:
+                  audienceInterestIds:
+                  - interest-123
+                  ageGroups:
+                  - min: 25
+                    max: 34
+                  gender: all
+                copy:
+                  notes: Use upbeat tone
+                  promoCode: SAVE20
+                  vanityUrl: https://example.com/promo
+                frequencyCaps:
+                - frequencyUnit: day
+                  frequencyPeriod: 1
+                  maxImpressions: 5
+                externalId: EXT-12345
+                dcmLineItemId: '355599820'
+                assetFormat: audio
+                status: active
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+                legacyFields: null
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Direct Sales API v2
+      summary: Update an Order
+      description: Update an order under a Standard or Priority campaign.
+      operationId: updateAnOrder
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                impressionsCap:
+                  type: integer
+                schedule:
+                  type: object
+                  properties:
+                    startAt:
+                      type: string
+                      format: date-time
+                    endAt:
+                      type: string
+                      format: date-time
+                    flightTimezone:
+                      type: string
+                position:
+                  type: integer
+                pacingType:
+                  type: string
+                cpmRate:
+                  type: number
+                state:
+                  type: string
+                includeContentTargets:
+                  type: object
+                  properties:
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                excludeContentTargets:
+                  type: object
+                  properties:
+                    episodes:
+                      type: array
+                      items:
+                        type: string
+                includeGeotargets:
+                  type: object
+                  properties:
+                    countryCode:
+                      type: string
+                    regionIds:
+                      type: array
+                      items:
+                        type: string
+                excludeGeotargets:
+                  type: object
+                  properties:
+                    cityIds:
+                      type: array
+                      items:
+                        type: string
+                includeDeviceTargets:
+                  type: array
+                  items:
+                    type: string
+                includeAudienceTargets:
+                  type: object
+                  properties:
+                    audienceInterestIds:
+                      type: array
+                      items:
+                        type: string
+                    ageGroups:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          min:
+                            type: integer
+                          max:
+                            type: integer
+                    gender:
+                      type: string
+                copy:
+                  type: object
+                  properties:
+                    notes:
+                      type: string
+                    promoCode:
+                      type: string
+                    vanityUrl:
+                      type: string
+                      format: uri
+                frequencyCaps:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      frequencyUnit:
+                        type: string
+                      frequencyPeriod:
+                        type: integer
+                      maxImpressions:
+                        type: integer
+                externalId:
+                  type: string
+                dcmLineItemId:
+                  type: string
+                status:
+                  type: string
+            example:
+              name: Q1 2026 Order - Updated
+              impressionsCap: 150000
+              schedule:
+                startAt: '2026-03-01T00:00:00'
+                endAt: '2026-04-30T23:59:59'
+                flightTimezone: America/New_York
+              position: 2
+              pacingType: front_loaded
+              cpmRate: 30.0
+              state: 'off'
+              includeContentTargets:
+                tags:
+                - tag-uuid-1
+                - tag-uuid-2
+              excludeContentTargets:
+                episodes:
+                - episode-uuid-2
+              includeGeotargets:
+                countryCode: US
+                regionIds:
+                - '5128581'
+                - '5332921'
+              excludeGeotargets:
+                cityIds:
+                - '4930956'
+              includeDeviceTargets:
+              - ios
+              includeAudienceTargets:
+                audienceInterestIds:
+                - interest-123
+                ageGroups:
+                - min: 25
+                  max: 34
+                - min: 35
+                  max: 44
+                gender: all
+              copy:
+                notes: Updated copy notes
+                promoCode: SAVE30
+                vanityUrl: https://example.com/updated-promo
+              frequencyCaps:
+              - frequencyUnit: week
+                frequencyPeriod: 1
+                maxImpressions: 3
+              externalId: EXT-12345-UPDATED
+              dcmLineItemId: '355599821'
+              status: archived
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  impressionsCap:
+                    type: integer
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                      flightTimezone:
+                        type: string
+                  adHash:
+                    type: string
+                  position:
+                    type: integer
+                  pacingType:
+                    type: string
+                  cpmRate:
+                    type: number
+                  state:
+                    type: string
+                  includeContentTargets:
+                    type: object
+                    properties:
+                      shows: {}
+                      episodes: {}
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                      topics: {}
+                  excludeContentTargets:
+                    type: object
+                    properties:
+                      shows: {}
+                      episodes:
+                        type: array
+                        items:
+                          type: string
+                      tags: {}
+                      topics: {}
+                  includeGeotargets:
+                    type: object
+                    properties:
+                      countryCodes:
+                        type: array
+                        items:
+                          type: string
+                      regionIds:
+                        type: array
+                        items:
+                          type: string
+                  excludeGeotargets:
+                    type: object
+                    properties:
+                      cityIds:
+                        type: array
+                        items:
+                          type: string
+                  includeDeviceTargets:
+                    type: array
+                    items:
+                      type: string
+                  includeAudienceTargets:
+                    type: object
+                    properties:
+                      audienceInterestIds:
+                        type: array
+                        items:
+                          type: string
+                      ageGroups:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            min:
+                              type: integer
+                            max:
+                              type: integer
+                      gender:
+                        type: string
+                  copy:
+                    type: object
+                    properties:
+                      notes:
+                        type: string
+                      promoCode:
+                        type: string
+                      vanityUrl:
+                        type: string
+                        format: uri
+                  frequencyCaps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        frequencyUnit:
+                          type: string
+                        frequencyPeriod:
+                          type: integer
+                        maxImpressions:
+                          type: integer
+                  externalId:
+                    type: string
+                  dcmLineItemId:
+                    type: string
+                  assetFormat:
+                    type: string
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  legacyFields: {}
+              example:
+                id: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+                name: Q1 2026 Order - Updated
+                impressionsCap: 150000
+                schedule:
+                  startAt: '2026-03-01T00:00:00'
+                  endAt: '2026-04-30T23:59:59'
+                  flightTimezone: America/New_York
+                adHash: '012'
+                position: 2
+                pacingType: front_loaded
+                cpmRate: 30.0
+                state: 'off'
+                includeContentTargets:
+                  shows: null
+                  episodes: null
+                  tags:
+                  - tag-uuid-1
+                  - tag-uuid-2
+                  topics: null
+                excludeContentTargets:
+                  shows: null
+                  episodes:
+                  - episode-uuid-2
+                  tags: null
+                  topics: null
+                includeGeotargets:
+                  countryCodes:
+                  - US
+                  regionIds:
+                  - '5128581'
+                  - '5332921'
+                excludeGeotargets:
+                  cityIds:
+                  - '4930956'
+                includeDeviceTargets:
+                - ios
+                includeAudienceTargets:
+                  audienceInterestIds:
+                  - interest-123
+                  ageGroups:
+                  - min: 25
+                    max: 34
+                  - min: 35
+                    max: 44
+                  gender: all
+                copy:
+                  notes: Updated copy notes
+                  promoCode: SAVE30
+                  vanityUrl: https://example.com/updated-promo
+                frequencyCaps:
+                - frequencyUnit: week
+                  frequencyPeriod: 1
+                  maxImpressions: 3
+                externalId: EXT-12345-UPDATED
+                dcmLineItemId: '355599821'
+                assetFormat: audio
+                status: archived
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-02-10T14:20:00.000Z'
+                legacyFields: null
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/advertisers/{advertiser_id}/assets:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List All Assets
+      description: List all assets for an advertiser.
+      operationId: listAllAssets
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    assetType:
+                      type: string
+                    status:
+                      type: string
+                    url:
+                      type: string
+                      format: uri
+                    fileType:
+                      type: string
+                    thumbnailUrl: {}
+                    height: {}
+                    width: {}
+                    durationMs:
+                      type: integer
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+              example:
+              - id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Spring Audio Ad
+                assetType: audio
+                status: ready
+                url: https://storage.googleapis.com/assets/audio/spring-ad.mp3
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: 30000
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Create an Asset
+      description: Create an asset.
+      operationId: createAnAsset
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assetType:
+                  type: string
+                name:
+                  type: string
+            example:
+              assetType: audio
+              name: Spring Audio Ad
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url: {}
+                  fileType: {}
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs: {}
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Spring Audio Ad
+                assetType: audio
+                status: waiting_upload
+                url: null
+                fileType: null
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: null
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/advertisers/{advertiser_id}/assets/{asset_id}:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: Get an Asset
+      description: Get asset metadata.
+      operationId: getAnAsset
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  fileType:
+                    type: string
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Spring Audio Ad
+                assetType: audio
+                status: ready
+                url: https://storage.googleapis.com/assets/audio/spring-ad.mp3
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: 30000
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Direct Sales API v2
+      summary: Update an Asset
+      description: Update an asset.
+      operationId: updateAnAsset
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            example:
+              name: Updated Asset Name
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  fileType:
+                    type: string
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Updated Asset Name
+                assetType: audio
+                status: ready
+                url: https://storage.googleapis.com/assets/audio/spring-ad.mp3
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: 30000
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-02-10T14:20:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/advertisers/{advertiser_id}/assets/{asset_id}/start-chunked-upload:
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Start Chunked Upload
+      description: Start a chunked upload session. Returns a unique upload session ID to be used in subsequent transfer requests, along with the maximum file chunk size in megabytes.
+      operationId: startChunkedUpload
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadSessionId:
+                    type: string
+                  maxChunkSizeMb:
+                    type: integer
+              example:
+                uploadSessionId: upload-session-abc123
+                maxChunkSizeMb: 20
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/advertisers/{advertiser_id}/assets/{asset_id}/transfer-chunked-upload:
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Transfer Chunked Upload
+      description: Transfer one section of binary media data. Supports uploads of file chunks up to 20MB in size. Asset type can be audio, video, or image.
+      operationId: transferChunkedUpload
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                media:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+              example:
+                success: true
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/advertisers/{advertiser_id}/assets/{asset_id}/complete-chunked-upload:
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Complete Chunked Upload
+      description: Complete the chunked upload session.
+      operationId: completeChunkedUpload
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: advertiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertiser in the form of a UUID
+        example: 7yew148812-db00-11e9-af1e-1367d8562de8
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Asset in the form of a UUID
+        example: a1b2c3d4-1234-5678-90ab-cdef12345678
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uploadSessionId:
+                  type: string
+                numberOfSections:
+                  type: integer
+                assetType:
+                  type: string
+            example:
+              uploadSessionId: upload-session-abc123
+              numberOfSections: 5
+              assetType: audio
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetType:
+                    type: string
+                  status:
+                    type: string
+                  url: {}
+                  fileType:
+                    type: string
+                  thumbnailUrl: {}
+                  height: {}
+                  width: {}
+                  durationMs: {}
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: a1b2c3d4-1234-5678-90ab-cdef12345678
+                name: Spring Audio Ad
+                assetType: audio
+                status: processing
+                url: null
+                fileType: mp3
+                thumbnailUrl: null
+                height: null
+                width: null
+                durationMs: null
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:35:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/campaigns/{campaign_id}/orders/{order_id}/advertisements:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List All Advertisements
+      description: List advertisements for an order.
+      operationId: listAllAdvertisements
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number to retrieve (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Number of items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    assetId:
+                      type: string
+                      format: uuid
+                    location:
+                      type: string
+                    adBreak: {}
+                    state:
+                      type: string
+                    weight:
+                      type: integer
+                    schedule:
+                      type: object
+                      properties:
+                        startAt:
+                          type: string
+                          format: date-time
+                        endAt:
+                          type: string
+                          format: date-time
+                    trackingUrls:
+                      type: array
+                      items:
+                        type: string
+                        format: uri
+                    clickableAd:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        tagline:
+                          type: string
+                        clickthroughUrl:
+                          type: string
+                          format: uri
+                        assetId:
+                          type: string
+                    status:
+                      type: string
+                    legacyFields: {}
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+              example:
+              - id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                name: Preroll Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: preroll
+                adBreak: null
+                state: 'on'
+                weight: 1
+                schedule:
+                  startAt: '2026-03-08T03:00:00'
+                  endAt: '2026-03-25T18:30:00'
+                trackingUrls:
+                - https://trackingurl1.com
+                - https://trackingurl2.com
+                clickableAd:
+                  title: Brand Name
+                  tagline: Save 20% Today
+                  clickthroughUrl: https://example.com/landing
+                  assetId: image-asset-123
+                status: approved
+                legacyFields: null
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Direct Sales API v2
+      summary: Create an Advertisement
+      description: Create an advertisement.
+      operationId: createAnAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                assetId:
+                  type: string
+                  format: uuid
+                location:
+                  type: string
+                state:
+                  type: string
+                weight:
+                  type: integer
+                schedule:
+                  type: object
+                  properties:
+                    startAt:
+                      type: string
+                      format: date-time
+                    endAt:
+                      type: string
+                      format: date-time
+                trackingUrls:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                clickableAd:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    tagline:
+                      type: string
+                    clickthroughUrl:
+                      type: string
+                      format: uri
+                    assetId:
+                      type: string
+            example:
+              name: Preroll Ad
+              assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+              location: preroll
+              state: 'on'
+              weight: 1
+              schedule:
+                startAt: '2026-03-08T03:00:00'
+                endAt: '2026-03-25T18:30:00'
+              trackingUrls:
+              - https://trackingurl1.com
+              - https://trackingurl2.com
+              clickableAd:
+                title: Brand Name
+                tagline: Save 20% Today
+                clickthroughUrl: https://example.com/landing
+                assetId: image-asset-123
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetId:
+                    type: string
+                    format: uuid
+                  location:
+                    type: string
+                  adBreak: {}
+                  state:
+                    type: string
+                  weight:
+                    type: integer
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                  trackingUrls:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  clickableAd:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      tagline:
+                        type: string
+                      clickthroughUrl:
+                        type: string
+                        format: uri
+                      assetId:
+                        type: string
+                  status:
+                    type: string
+                  legacyFields: {}
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                name: Preroll Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: preroll
+                adBreak: null
+                state: 'on'
+                weight: 1
+                schedule:
+                  startAt: '2026-03-08T03:00:00'
+                  endAt: '2026-03-25T18:30:00'
+                trackingUrls:
+                - https://trackingurl1.com
+                - https://trackingurl2.com
+                clickableAd:
+                  title: Brand Name
+                  tagline: Save 20% Today
+                  clickthroughUrl: https://example.com/landing
+                  assetId: image-asset-123
+                status: pending
+                legacyFields: null
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/campaigns/{campaign_id}/orders/{order_id}/advertisements/{advertisement_id}:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: Get an Advertisement
+      description: Get an advertisement.
+      operationId: getAnAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      - name: advertisement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of a UUID
+        example: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetId:
+                    type: string
+                    format: uuid
+                  location:
+                    type: string
+                  adBreak: {}
+                  state:
+                    type: string
+                  weight:
+                    type: integer
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                  trackingUrls:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  clickableAd:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      tagline:
+                        type: string
+                      clickthroughUrl:
+                        type: string
+                        format: uri
+                      assetId:
+                        type: string
+                  status:
+                    type: string
+                  legacyFields: {}
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                name: Preroll Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: preroll
+                adBreak: null
+                state: 'on'
+                weight: 1
+                schedule:
+                  startAt: '2026-03-08T03:00:00'
+                  endAt: '2026-03-25T18:30:00'
+                trackingUrls:
+                - https://trackingurl1.com
+                - https://trackingurl2.com
+                clickableAd:
+                  title: Brand Name
+                  tagline: Save 20% Today
+                  clickthroughUrl: https://example.com/landing
+                  assetId: image-asset-123
+                status: approved
+                legacyFields: null
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-01-15T10:30:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Direct Sales API v2
+      summary: Update an Advertisement
+      description: Update an advertisement.
+      operationId: updateAnAdvertisement
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Campaign in the form of a UUID
+        example: 4ba157f0-a506-11e6-9164-437b083548dd
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Order in the form of a UUID
+        example: ee2d5bb6-a526-11e6-9164-e3c1235770c1
+      - name: advertisement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Advertisement in the form of a UUID
+        example: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                state:
+                  type: string
+                weight:
+                  type: integer
+            example:
+              name: Updated Preroll Ad
+              state: 'off'
+              weight: 5
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  assetId:
+                    type: string
+                    format: uuid
+                  location:
+                    type: string
+                  adBreak: {}
+                  state:
+                    type: string
+                  weight:
+                    type: integer
+                  schedule:
+                    type: object
+                    properties:
+                      startAt:
+                        type: string
+                        format: date-time
+                      endAt:
+                        type: string
+                        format: date-time
+                  trackingUrls:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  clickableAd:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      tagline:
+                        type: string
+                      clickthroughUrl:
+                        type: string
+                        format: uri
+                      assetId:
+                        type: string
+                  status:
+                    type: string
+                  legacyFields: {}
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: fd2142fc-a6bd-11e6-b1f6-47960ee0cc34
+                name: Updated Preroll Ad
+                assetId: a1b2c3d4-1234-5678-90ab-cdef12345678
+                location: preroll
+                adBreak: null
+                state: 'off'
+                weight: 5
+                schedule:
+                  startAt: '2026-03-08T03:00:00'
+                  endAt: '2026-03-25T18:30:00'
+                trackingUrls:
+                - https://trackingurl1.com
+                - https://trackingurl2.com
+                clickableAd:
+                  title: Brand Name
+                  tagline: Save 20% Today
+                  clickthroughUrl: https://example.com/landing
+                  assetId: image-asset-123
+                status: approved
+                legacyFields: null
+                createdAt: '2026-01-15T10:30:00.000Z'
+                updatedAt: '2026-02-10T14:20:00.000Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/targeting/episode-topics:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List Episode Topics
+      description: List episode topics for targeting (requires Spotify enablement).
+      operationId: listEpisodeTopics
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    children:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+              example:
+              - id: books-and-literature
+                name: Books And Literature
+                children:
+                - id: books-and-literature-fiction
+                  name: Fiction
+                - id: books-and-literature-non-fiction
+                  name: Non Fiction
+              - id: true-crime
+                name: True Crime
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/targeting/audience-interests:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List Audience Interests
+      description: List audience interests for targeting (requires Spotify enablement).
+      operationId: listAudienceInterests
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    taxonomyType:
+                      type: string
+              example:
+              - id: interest-123
+                name: Technology Enthusiasts
+                taxonomyType: interests
+              - id: demo-456
+                name: Young Professionals
+                taxonomyType: demographics
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/targeting/geo/countries:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List Countries
+      description: List countries available for geo targeting. Supports optional search and filtering.
+      operationId: listCountries
+      parameters:
+      - name: country_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by country code
+        example: US
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search query to filter by name
+        example: uni
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    countryCode:
+                      type: string
+                    name:
+                      type: string
+              example:
+              - countryCode: US
+                name: United States
+              - countryCode: GB
+                name: United Kingdom
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/targeting/geo/regions:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List Regions
+      description: List regions (states/provinces) available for geo targeting.
+      operationId: listRegions
+      parameters:
+      - name: country_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by country code
+        example: US
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search query to filter by name
+        example: cal
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    countryCode:
+                      type: string
+                    name:
+                      type: string
+              example:
+              - id: '5332921'
+                countryCode: US
+                name: California
+              - id: '4566966'
+                countryCode: US
+                name: Pennsylvania
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/targeting/geo/dmas:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List DMAs
+      description: List US Designated Market Areas (DMAs) available for geo targeting.
+      operationId: listDmas
+      parameters:
+      - name: country_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by country code
+        example: US
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search query to filter by name
+        example: abil
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+              example:
+              - id: '662'
+                name: Abilene-Sweetwater
+              - id: '501'
+                name: New York
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/targeting/geo/cities:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List Cities
+      description: List cities available for geo targeting.
+      operationId: listCities
+      parameters:
+      - name: country_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by country code
+        example: US
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search query to filter by name
+        example: los
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    countryCode:
+                      type: string
+                    name:
+                      type: string
+              example:
+              - id: '5368361'
+                countryCode: US
+                name: Los Angeles
+              - id: '3009937'
+                countryCode: MC
+                name: La Condamine
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/targeting/geo/postal-codes:
+    get:
+      tags:
+      - Direct Sales API v2
+      summary: List Postal Codes
+      description: List postal codes available for geo targeting.
+      operationId: listPostalCodes
+      parameters:
+      - name: country_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by country code
+        example: US
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search query to filter by name
+        example: '900'
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Page number (default: 1)'
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Items per page (default: 50, max: 50)'
+        example: '50'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    countryCode:
+                      type: string
+                    name:
+                      type: string
+              example:
+              - id: US:90001
+                countryCode: US
+                name: '90001'
+              - id: US:90002
+                countryCode: US
+                name: '90002'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '422':
+      description: Validation failed. The request body contains invalid or missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  title:
+                  - can't be blank
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

@@ -1,0 +1,1139 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Sponsorships API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Sponsorships
+  description: '**⚠️ AVAILABILITY NOTICE ⚠️**
+
+
+    These Sponsorship API endpoints will be available starting in late April.
+
+
+    The Sponsorship API provides endpoints for managing sponsorships and sponsors, and for viewing bookable cuepoints for podcast episodes.
+
+
+    **Base URL:** `https://cms.megaphone.fm/api/v2`
+
+
+    ## Overview
+
+
+    **Standard Sponsorships**: Media file inserted. Can target multiple locations.
+
+
+    **Embedded Sponsorships**: Content already baked into episode audio. Created via Create Embedded Sponsorship.
+
+
+    **Ending a Sponsorship**: Set `endDate` or `status: "archived"` via Update. For embedded sponsorships, this stitches content out and frees the cuepoint. Deleting the embedded cuepoint puts the sponsorship in `inactive` status and the original content plays, but analytics will not be tracked.
+
+
+    **Note:** Existing Megaphone baked-in annotations will become Embedded Sponsorships without retroactive analytics.'
+paths:
+  /api/v2/organizations/{organization_id}/sponsorships:
+    get:
+      tags:
+      - Sponsorships
+      summary: List All Sponsorships
+      description: List all sponsorships for an organization with optional filtering.
+      operationId: listAllSponsorships
+      parameters:
+      - name: show_uris
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Filter by Spotify show URIs
+        example: spotify:show:abc123
+      - name: episode_uris
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Filter by Spotify episode URIs
+        example: spotify:episode:xyz789
+      - name: cuepoint_ids
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Filter by cuepoint IDs
+        example: fb748be0-373d-11ee-a14a-a3c35c166f0f
+      - name: sponsor_ids
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Filter by sponsor IDs
+        example: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search term for sponsorship name
+        example: Brand
+      - name: start_date (optional, string, `2026-05-01`) ... Filter by start date. Optional, but if provided, `end_date` is required.
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: end_date (optional, string, `2026-06-30`) ... Filter by end date. Optional, but if provided, `start_date` is required.
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Filter by type: `standard`, `embedded`'
+        example: standard
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Filter by status: `draft`, `scheduled`, `active`, `inactive`, `completed`, `archived`'
+        example: active
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    startDate:
+                      type: string
+                      format: date-time
+                    endDate:
+                      type: string
+                      format: date-time
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    duration:
+                      type: integer
+                    mediaUrl:
+                      type: string
+                      format: uri
+                    showUri:
+                      type: string
+                    sponsorId:
+                      type: string
+                      format: uuid
+                    advertiserCategory:
+                      type: string
+                      description: Advertiser category (available through [advertiser categories endpoint](#tag/advertiser-categories/GET/api/targeting/categories))
+                      example: ADV-1-8
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    targets:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          sponsorshipId:
+                            type: string
+                            format: uuid
+                          cuepointId:
+                            type: string
+                            format: uuid
+                          episodeUri:
+                            type: string
+                    sponsor:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+              example:
+              - id: 8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+                name: Q2 Brand Partnership
+                startDate: '2026-05-01T00:00:00.000Z'
+                endDate: '2026-06-30T23:59:59.000Z'
+                type: standard
+                status: active
+                duration: 30
+                mediaUrl: https://storage.example.com/sponsorship.mp3
+                showUri: spotify:show:abc123
+                sponsorId: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+                advertiserCategory: ADV-1-8
+                createdAt: '2026-04-22T10:30:00.000Z'
+                updatedAt: '2026-04-22T10:30:00.000Z'
+                targets:
+                - sponsorshipId: 8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+                  cuepointId: fb748be0-373d-11ee-a14a-a3c35c166f0f
+                  episodeUri: spotify:episode:xyz789
+                sponsor:
+                  id: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+                  name: Acme Corporation
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Sponsorships
+      summary: Create a Sponsorship
+      description: 'Create a new sponsorship with targets. Embedded sponsorships must be created via the Create Embedded Sponsorship route.
+
+
+        **Draft Sponsorships:** Sponsorships can be created as drafts by bassing `status: "draft"`. Draft Sponsorships do not play in the Episode, but their Targets **do** reserve the cuepoint, blocking other Sponsorships.
+
+
+        **Archived Sponsorships:** Sponsorships cannot be deleted. Use the Update Sponsorship endpoint with `status: "archived"` to archive a sponsorship (non-reversible).
+
+
+        You can provide either a `sponsorId` to link to an existing sponsor, or nest a new sponsor object to create one inline.'
+      operationId: createASponsorship
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                showUri:
+                  type: string
+                startDate:
+                  type: string
+                  format: date-time
+                endDate:
+                  type: string
+                  format: date-time
+                targets:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      cuepointId:
+                        type: string
+                        format: uuid
+                sponsorId:
+                  type: string
+                  format: uuid
+                advertiserCategory:
+                  type: string
+                  description: Advertiser category (available through [advertiser categories endpoint](#tag/advertiser-categories/GET/api/targeting/categories))
+                  example: ADV-1-8
+                videoFile:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      format: uri
+                    fileType:
+                      type: string
+            example:
+              name: Q2 Brand Partnership
+              showUri: spotify:show:abc123
+              startDate: '2026-05-01T00:00:00.000Z'
+              endDate: '2026-06-30T23:59:59.000Z'
+              targets:
+              - cuepointId: fb748be0-373d-11ee-a14a-a3c35c166f0f
+              sponsorId: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+              advertiserCategory: ADV-1-8
+              videoFile:
+                url: https://storage.example.com/sponsorship-video.mp4
+                fileType: mp4
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+              example:
+                id: spotify:sponsorship:8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/sponsorships/embedded:
+    post:
+      tags:
+      - Sponsorships
+      summary: Create an Embedded Sponsorship
+      description: 'Create an Embedded Sponsorship for content already baked into the episode. This creates 2 entities: an Embedded Sponsorship and the a Cuepoint on the Episode with `action: "replace"`. If the Embedded Sponsorship has an `endDate` or is set to `status: "archived"`, the Episode''s content between `startTime` and `endTime` will be **removed** and the cuepoint will be available for new `standard` Sponsorships to target.
+
+
+        **Validations:**
+
+
+        - `startTime` must be greater than 30 seconds
+
+
+        - `endTime` must be greater than `startTime`
+
+
+        - No `mediaUrl` parameter (content is in the episode)
+
+
+        - No `targets` parameter (provided `cuepointId` represents the only target)
+
+
+        **Note on timing fields:** `startTime` and `endTime` are positions *within the episode audio* (offsets in seconds). `endDate` is a *calendar date* on which the sponsorship stops being active.'
+      operationId: createAnEmbeddedSponsorship
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                episodeUri:
+                  type: string
+                startTime:
+                  type: number
+                endTime:
+                  type: number
+                endDate:
+                  type: string
+                timezone:
+                  type: string
+                sponsorId:
+                  type: string
+                  format: uuid
+                advertiserCategory:
+                  type: string
+                  description: Advertiser category (available through [advertiser categories endpoint](#tag/advertiser-categories/GET/api/targeting/categories))
+                  example: ADV-1-8
+            example:
+              name: Mid-Episode Sponsor Mention
+              episodeUri: spotify:episode:xyz789
+              startTime: 75.0
+              endTime: 105.0
+              endDate: '2026-06-30'
+              timezone: America/New_York
+              sponsorId: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+              advertiserCategory: ADV-1-8
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+              example:
+                id: spotify:sponsorship:9e5f3c2b-d4e6-5b8c-0a3e-2f7b9c4d6e8f
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/sponsorships/{sponsorship_id}:
+    get:
+      tags:
+      - Sponsorships
+      summary: Get a Sponsorship
+      description: Get a single sponsorship by ID, optionally including targets. (**Note:** this includes Embedded Sponorships)
+      operationId: getASponsorship
+      parameters:
+      - name: include_targets
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Include targets in the response
+        example: 'true'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: sponsorship_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Sponsorship in the form of a UUID
+        example: 8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  startDate:
+                    type: string
+                    format: date-time
+                  endDate:
+                    type: string
+                    format: date-time
+                  type:
+                    type: string
+                  status:
+                    type: string
+                  duration:
+                    type: integer
+                  mediaUrl:
+                    type: string
+                    format: uri
+                  showUri:
+                    type: string
+                  sponsorId:
+                    type: string
+                    format: uuid
+                  advertiserCategory:
+                    type: string
+                    description: Advertiser category (available through [advertiser categories endpoint](#tag/advertiser-categories/GET/api/targeting/categories))
+                    example: ADV-1-8
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  targets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sponsorshipId:
+                          type: string
+                          format: uuid
+                        cuepointId:
+                          type: string
+                          format: uuid
+                        episodeUri:
+                          type: string
+              example:
+                id: 8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+                name: Q2 Brand Partnership
+                startDate: '2026-05-01T00:00:00.000Z'
+                endDate: '2026-06-30T23:59:59.000Z'
+                type: standard
+                status: active
+                duration: 30
+                mediaUrl: https://storage.example.com/sponsorship.mp3
+                showUri: spotify:show:abc123
+                sponsorId: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+                advertiserCategory: ADV-1-8
+                createdAt: '2026-04-22T10:30:00.000Z'
+                updatedAt: '2026-04-22T10:30:00.000Z'
+                targets:
+                - sponsorshipId: 8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+                  cuepointId: fb748be0-373d-11ee-a14a-a3c35c166f0f
+                  episodeUri: spotify:episode:xyz789
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+      - Sponsorships
+      summary: Update a Sponsorship
+      description: 'Update an existing sponsorship. Only `name`, `endDate`, `targets`, and `advertiserCategory` can be modified.
+
+
+        **Editable statuses:** `draft`, `scheduled`, `active`, `inactive`
+
+        **Locked statuses:** `completed`, `archived` (cannot be edited)
+
+
+        To archive, set `status: "archived"` (non-reversible). For embedded sponsorships, archiving stitches content out of the Episode and frees the cuepoint.'
+      operationId: updateASponsorship
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: sponsorship_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Sponsorship in the form of a UUID
+        example: 8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                endDate:
+                  type: string
+                  format: date-time
+                advertiserCategory:
+                  type: string
+                  description: Advertiser category (available through [advertiser categories endpoint](#tag/advertiser-categories/GET/api/targeting/categories))
+                  example: ADV-1-8
+            example:
+              name: Q2 Brand Partnership - Updated
+              advertiserCategory: ADV-1-8
+              endDate: '2026-07-31T23:59:59.000Z'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  startDate:
+                    type: string
+                    format: date-time
+                  endDate:
+                    type: string
+                    format: date-time
+                  type:
+                    type: string
+                  status:
+                    type: string
+                  duration:
+                    type: integer
+                  mediaUrl:
+                    type: string
+                    format: uri
+                  showUri:
+                    type: string
+                  sponsorId:
+                    type: string
+                    format: uuid
+                  advertiserCategory:
+                    type: string
+                    description: Advertiser category (available through [advertiser categories endpoint](#tag/advertiser-categories/GET/api/targeting/categories))
+                    example: ADV-1-8
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+              example:
+                id: 8d4f2b1a-c3e5-4a7b-9f2d-1e6a8b3c5d7f
+                name: Q2 Brand Partnership - Updated
+                startDate: '2026-05-01T00:00:00.000Z'
+                endDate: '2026-07-31T23:59:59.000Z'
+                type: standard
+                status: active
+                duration: 30
+                mediaUrl: https://storage.example.com/sponsorship.mp3
+                showUri: spotify:show:abc123
+                sponsorId: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+                advertiserCategory: ADV-1-8
+                createdAt: '2026-04-22T10:30:00.000Z'
+                updatedAt: '2026-04-25T14:30:00.000Z'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: Sponsorship cannot be edited in 'completed' status
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/sponsors:
+    get:
+      tags:
+      - Sponsorships
+      summary: List All Sponsors
+      description: List all sponsors for an organization with optional filtering.
+      operationId: listAllSponsors
+      parameters:
+      - name: show_uris
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Filter by Spotify show URIs
+        example: spotify:show:abc123
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search term for sponsor name
+        example: Acme
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+              example:
+              - id: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+                name: Acme Corporation
+              - id: 1b2c3d4e-f5a6-7b8c-9d0e-1f2a3b4c5d6e
+                name: TechBrand Inc
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+      - Sponsorships
+      summary: Create a Sponsor
+      description: Create a new sponsor. Sponsor names must be unique within the organization.
+      operationId: createASponsor
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            example:
+              name: Acme Corporation
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+              example:
+                id: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+                name: Acme Corporation
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+  /api/v2/organizations/{organization_id}/sponsors/{sponsor_id}:
+    patch:
+      tags:
+      - Sponsorships
+      summary: Update a Sponsor
+      description: Update an existing sponsor's name.
+      operationId: updateASponsor
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: sponsor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Sponsor in the form of a UUID
+        example: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            example:
+              name: Acme Corporation International
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+              example:
+                id: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+                name: Acme Corporation International
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+      - Sponsorships
+      summary: Delete a Sponsor
+      description: 'Delete a sponsor by ID.
+
+
+        **Note:** Sponsors cannot be deleted if they have Sponsorships attached to them. Remove all associated sponsorships first.'
+      operationId: deleteASponsor
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      - name: sponsor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Sponsor in the form of a UUID
+        example: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+              example:
+                id: 7a3b9c2d-e4f5-6a7b-8c9d-0e1f2a3b4c5d
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: Cannot delete sponsor with active sponsorships
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+  /api/v2/organizations/{organization_id}/bookable-sponsorship-cuepoints:
+    get:
+      tags:
+      - Sponsorships
+      summary: Get Bookable Sponsorship Cuepoints
+      description: 'Returns cuepoints that are available for sponsorship targeting, given a show URI and date range. This endpoint considers existing sponsorship rules:
+
+
+        - Only 2 sponsorships per episode at a given time
+
+
+        - Cuepoints cannot have multiple sponsorships for the same date range'
+      operationId: getBookableSponsorshipCuepoints
+      parameters:
+      - name: show_uri
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Spotify URI of the show
+        example: spotify:show:abc123
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Start date for availability check
+        example: '2026-05-01'
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: End date for availability check
+        example: '2026-06-30'
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Organization in the form of a UUID
+        example: 3ea516ea-a2d1-11e6-8e62-83147939747c
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    episodeUri:
+                      type: string
+                    episodeName:
+                      type: string
+                    episodePublishDate:
+                      type: string
+                      format: date-time
+                    cuepoints:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          cuepointId:
+                            type: string
+                            format: uuid
+              example:
+              - episodeUri: spotify:episode:xyz789
+                episodeName: 'Episode 42: The Big Interview'
+                episodePublishDate: '2026-04-15T09:00:00.000Z'
+                cuepoints:
+                - cuepointId: fb748be0-373d-11ee-a14a-a3c35c166f0f
+                - cuepointId: cd234ef5-678a-90bc-d123-e4f5a6b7c8d9
+              - episodeUri: spotify:episode:xyz790
+                episodeName: 'Episode 43: Behind the Scenes'
+                episodePublishDate: '2026-04-22T09:00:00.000Z'
+                cuepoints:
+                - cuepointId: ef345gh6-789b-01cd-e234-f5a6b7c8d9e0
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '422':
+      description: Validation failed. The request body contains invalid or missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  title:
+                  - can't be blank
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.

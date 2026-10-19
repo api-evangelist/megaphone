@@ -1,0 +1,447 @@
+openapi: 3.2.0
+info:
+  title: Megaphone Cuepoints API
+  version: 1.0.0
+  description: 'The Megaphone API (https://cms.megaphone.fm/api) allows podcast producers and partners to view, create, update, and delete podcasts and episodes. Note that the Megaphone API is rate limited at 60 requests per minute (1 request per second). ## Direct Sales API Breaking Change Notice
+
+
+    ⚠️ **IMPORTANT** ⚠️
+
+
+    The legacy Direct Sales endpoints for Advertisers, Campaigns, Orders, Advertisements and Geos are being replaced with new v2 endpoints with enhanced functionality. ### Timeline
+
+
+    **Phase 1: Before April 15, 2026**
+
+
+    - Only legacy endpoints are available
+
+
+    - Continue using existing Direct Sales API endpoints
+
+
+    **Phase 2: April 15, 2026 10:00:00 AM EST - July 14, 2026 11:59:59 UTC (Migration Period)**
+
+
+    - **v2 endpoints become available**
+
+
+    - Legacy endpoints continue to work during this period
+
+
+    - Both legacy and v2 endpoints are operational
+
+
+    - **We strongly encourage you to start testing and migrating to v2 endpoints as soon as they become available to ensure a smooth transition before the sunset date and to continue ad delivery without disruption.**
+
+
+    **Phase 3: After July 14, 2026 11:59:59 UTC**
+
+
+    - Legacy endpoints are **removed and will stop working**
+
+
+    - Only v2 endpoints will be supported
+
+
+    - [Old] Standard campaigns can use v2 GET endpoints
+
+
+    ### What''s Changing
+
+
+    **API Version:** v2 REST API for managing advertisers, campaigns, orders, assets, advertisements, and targeting. **Effective Date:** New endpoints (v2) will be effective on **April 15, 2026 10:00:00 AM EST**
+
+
+    **Sunset Date:** Legacy endpoints stop for [Old] Standard on **July 14, 2026 11:59:59 UTC**
+
+
+    ##### Capability Matrix
+
+
+    API endpoint availability by resource, campaign type, and version
+
+
+    | Resource | Campaign Type | GET (v2) | POST / PATCH (v2) | DELETE (v2) | Legacy POST / PUT / GET / DELETE |
+
+    | ------------------ | ------------------- | :------: | :---------------: | :---------: | :------------------------------: |
+
+    | Advertisers | N/A | ✅ | ✅ | ✅ | ✅ |
+
+    | Campaigns | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Campaigns | [Old] Standard* | ✅ | ❌ | ❌ | ✅ |
+
+    | Orders | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Orders | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Advertisements | Standard / Priority | ✅ | ✅ (Archive)† | ❌ | ❌ |
+
+    | Advertisements | [Old] Standard | ✅ | ❌ | ❌ | ✅ |
+
+    | Assets** | Standard / Priority | ✅ | ✅ | ❌ | ❌ |
+
+    | Geo Targeting*** | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Episode Topics | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+    | Audience Interests | Standard / Priority | ✅ | N/A | N/A | ❌ |
+
+
+    *"[Old] Standard" refers to campaigns that will end after the sunset date
+
+
+    **Assets to be used for Standard/Priority campaigns
+
+
+    ***Geo Targeting includes Countries, Regions, DMAs, Cities, and Postal Codes lookup endpoints. Not applicable to [Old] Standard campaigns. [Old] Standard campaign orders can continue to use the legacy geo endpoints below. †v2 uses PATCH with `status: "archived"` instead of DELETE for Campaigns, Orders, and Advertisements. See migration guide for details.'
+  contact:
+    name: Megaphone Support
+    url: https://support.megaphone.fm/
+servers:
+- url: https://cms.megaphone.fm
+  description: Production
+security:
+- ApiToken: []
+tags:
+- name: Cuepoints
+  description: '**⚠️ IMPORTANT: Sponsorship Cuepoints ⚠️**
+
+
+    These endpoints manage **all cuepoints** on an episode, including:
+
+
+    - **Ad Cuepoints**: Standard ad break markers (preroll, midroll, postroll)
+
+
+    - **Sponsorship Cuepoints**: Locations for sponsorship content (`cuepointType: "sponsorship"`)
+
+
+    **⚠️ When using the PUT endpoint to replace cuepoints, ALL existing cuepoints are deleted and replaced with the provided array. This includes Sponsorship Cuepoints. If you do not include Sponsorship Cuepoints in your array, they will be permanently deleted.**
+
+
+    Deleting a Sponsorship Cuepoint removes the target from any Sponsorship using it, potentially putting the Sponsorship in `inactive` status. For Embedded Sponsorships, if the cuepoint is removed, the original content will play, but analytics will not be tracked.'
+paths:
+  /api/episodes/{episode_id}/cuepoints_batch:
+    post:
+      tags:
+      - Cuepoints
+      summary: Create a New Episode Cuepoint
+      description: Add new cuepoint(s) to an Episode. This endpoint **appends** to existing cuepoints—it does not replace them.
+      operationId: createANewEpisodeCuepoint
+      parameters:
+      - name: episode_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Episode in the form of a UUID
+        example: c69c34b2-62fe-12ee-997a-ca521c7f2ecg
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  cuepointType:
+                    type: string
+                  adCount:
+                    type: integer
+                  startTime:
+                    type: integer
+                  adSources:
+                    type: array
+                    items:
+                      type: string
+                  action:
+                    type: string
+                  isActive:
+                    type: boolean
+            example:
+            - cuepointType: midroll
+              adCount: 3
+              startTime: 90
+              adSources:
+              - auto
+              - auto
+              - auto
+              action: insert
+              isActive: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    title: {}
+                    isActive:
+                      type: boolean
+                    cuepointType:
+                      type: string
+                    action:
+                      type: string
+                    adCount:
+                      type: integer
+                    adSources:
+                      type: array
+                      items:
+                        type: string
+                    startTime:
+                      type: number
+                    endTime: {}
+                    notes: {}
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+              example:
+              - id: c280293c-8e65-11ee-b244-7f5e39bc40ef
+                title: null
+                isActive: true
+                cuepointType: midroll
+                action: insert
+                adCount: 3
+                adSources:
+                - auto
+                - auto
+                - auto
+                startTime: 90.0
+                endTime: null
+                notes: null
+                createdAt: '2023-11-29T03:17:00.100Z'
+                updatedAt: '2023-11-29T03:17:00.100Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+    put:
+      tags:
+      - Cuepoints
+      summary: Replace all Episode Cuepoints
+      description: '**⚠️ DESTRUCTIVE OPERATION ⚠️**
+
+
+        **This endpoint DELETES ALL existing cuepoints (including Sponsorship Cuepoints) and replaces them with the provided array.**
+
+
+        If you do not include existing Sponsorship Cuepoints in your request, they will be **permanently deleted**. This will:
+
+
+        - Remove targets from any Sponsorships using those cuepoints
+
+
+        - Potentially put Sponsorships in `inactive` status
+
+
+        - For Embedded Sponsorships, the original content will play, but analytics will not be tracked.
+
+
+        **Recommendation:** Before calling this endpoint, fetch current cuepoints and merge your changes with existing Sponsorship Cuepoints to preserve them.'
+      operationId: replaceAllEpisodeCuepoints
+      parameters:
+      - name: episode_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the Episode in the form of a UUID
+        example: c69c34b2-62fe-12ee-997a-ca521c7f2ecg
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  cuepointType:
+                    type: string
+                  adCount:
+                    type: integer
+                  startTime:
+                    type: integer
+                  adSources:
+                    type: array
+                    items:
+                      type: string
+                  action:
+                    type: string
+                  isActive:
+                    type: boolean
+                  title:
+                    type: string
+            example:
+            - cuepointType: midroll
+              adCount: 3
+              startTime: 90
+              adSources:
+              - auto
+              - auto
+              - auto
+              action: insert
+              isActive: true
+              title: First midroll break
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    title:
+                      type: string
+                    isActive:
+                      type: boolean
+                    cuepointType:
+                      type: string
+                    action:
+                      type: string
+                    adCount:
+                      type: integer
+                    adSources:
+                      type: array
+                      items:
+                        type: string
+                    startTime:
+                      type: number
+                    endTime: {}
+                    notes: {}
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+              example:
+              - id: c280293c-8e65-11ee-b244-7f5e39bc40ef
+                title: First midroll break
+                isActive: true
+                cuepointType: midroll
+                action: insert
+                adCount: 3
+                adSources:
+                - auto
+                - auto
+                - auto
+                startTime: 90.0
+                endTime: null
+                notes: null
+                createdAt: '2023-11-29T03:17:00.100Z'
+                updatedAt: '2023-11-29T03:17:00.100Z'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  responses:
+    '403':
+      description: The token's organization does not have API access, or the user lacks permission for this resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Forbidden
+    '401':
+      description: Authentication failed. The `Authorization` header is missing or the token is invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Access denied
+    '429':
+      description: Rate limit exceeded. The API is limited to 60 requests per minute.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Rate limit exceeded
+    '404':
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                example:
+                - Not found
+    '422':
+      description: Validation failed. The request body contains invalid or missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  title:
+                  - can't be blank
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: A Megaphone API token, sent as `Token token="<your-token>"`.
+    ServiceAuthJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Spotify service-auth JWT. Internal callers only.
