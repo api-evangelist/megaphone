@@ -578,3 +578,9 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Spotify service-auth JWT. Internal callers only.
+x-provenance:
+  method: harvested
+  publisher: Megaphone
+  source: https://developers.megaphone.fm/openapi.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
